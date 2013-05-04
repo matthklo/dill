@@ -30,7 +30,6 @@
 
 #include <wx/wx.h>
 #include <dill.h>
-#include <memory>
 #include "dlv_dillevt.h"
 
 #define DLV_VERSION_STRING wxT("DLV 0.1.0")
@@ -46,12 +45,12 @@ public:
 
     DlvFrame* getMainFrame();
 
-    static void dillCallback(DillEvent* ev);
-
 private:
     DECLARE_EVENT_TABLE()
 
-    std::shared_ptr<DlvEvtData>  mDlvEvtData;
+    static void dillCallback(DillEvent* e);
+    void updateConnectionStatus();
+
     wxTimer*                     mTimer;
     DlvFrame*                    mFrame;
     wxString                     mServerAddr;

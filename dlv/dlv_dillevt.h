@@ -40,19 +40,15 @@ enum
 
 extern const wxEventType DlvDillEvent;
 
-struct DlvEvtData
-{
-    virtual ~DlvEvtData() {}
-};
 
-struct DlvEvtDataConnStatus : public DlvEvtData
+struct DlvEvtDataConnStatus
 {
     wxString ServerAddr;
     int      ServerPort;
     int      ChannelNum;
 };
 
-struct DlvEvtDataLog : public DlvEvtData
+struct DlvEvtDataLog
 {
     unsigned char Priority;
     unsigned int  Channel;
@@ -62,7 +58,7 @@ struct DlvEvtDataLog : public DlvEvtData
     unsigned int  TimestampMs;
 };
 
-struct DlvEvtDataRegister : public DlvEvtData
+struct DlvEvtDataRegister
 {
     unsigned int  Channel;
     wxString      Register;

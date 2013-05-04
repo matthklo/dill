@@ -72,6 +72,8 @@ bool DlvApp::OnInit()
     mFrame = new DlvFrame;
     mFrame->Show();
 
+    updateConnectionStatus();
+
     // Kick off a periodical timer for updating
     // server information on status bar
     mTimer = new wxTimer(this);
@@ -92,18 +94,7 @@ int DlvApp::OnExit()
 
 void DlvApp::OnTimeout(wxTimerEvent& e)
 {
-    DlvEvtDataConnStatus* stat = new DlvEvtDataConnStatus;
-
-    wxCommandEvent ev(DlvDillEvent, DLVEVT_CONNSTAT);
-    ev.SetClientData(stat);
-
-    stat->ServerAddr = mServerAddr;
-    stat->ServerPort = mServerPort;
-    stat->ChannelNum = dill::availableChannels();
-
-    wxPostEvent(mFrame, ev);
-
-    mDlvEvtData.reset(stat);
+    updateConnectionStatus();
 }
 
 DlvFrame* DlvApp::getMainFrame()
@@ -111,10 +102,57 @@ DlvFrame* DlvApp::getMainFrame()
     return mFrame;
 }
 
+void DlvApp::updateConnectionStatus()
+{
+    DlvEvtDataConnStatus* stat = new DlvEvtDataConnStatus;
+    stat->ServerAddr = mServerAddr;
+    stat->ServerPort = mServerPort;
+    stat->ChannelNum = dill::availableChannels();
+
+    wxCommandEvent ev(DlvDillEvent, DLVEVT_CONNSTAT);
+    ev.SetClientData(stat);
+    wxPostEvent(mFrame, ev);
+}
+
 /* 
  * Callback from the main thread inside dill library,
- * make sure only communicate with dlv via event posting.
+ * make sure only communicate with UI via event posting.
  */
-void DlvApp::dillCallback(DillEvent *ev)
+void DlvApp::dillCallback(DillEvent *e)
 {
+    wxASSERT_MSG((e != 0), wxT("Null DillEvent pointer."));
+
+    switch(e->Type)
+    {
+    case DILL_EVENT_LOG:
+        {
+            DlvEvtDataLog *data = new DlvEvtDataLog;
+            data->Channel = e->ID;
+            data->Tag = wxString::FromUTF8(e->Tag);
+            data->Message = wxString::FromUTF8(e->Content);
+            data->Priority = e->Priority;
+            data->TimestampSec = e->TimeStamp1;
+            data->TimestampMs = e->TimeStamp2;
+            
+            wxCommandEvent ev(DlvDillEvent, DLVEVT_LOGDATA);
+            ev.SetClientData(data);
+            wxPostEvent(wxGetApp().getMainFrame(), ev);
+        }
+        break;
+    case DILL_EVENT_REG:
+        {
+            DlvEvtDataRegister *data = new DlvEvtDataRegister;
+            data->Channel = e->ID;
+            data->Register = wxString::FromUTF8(e->Tag);
+            data->Content = wxString::FromUTF8(e->Content);
+
+            wxCommandEvent ev(DlvDillEvent, DLVEVT_REGDATA);
+            ev.SetClientData(data);
+            wxPostEvent(wxGetApp().getMainFrame(), ev);
+        }
+        break;
+    default:
+        wxASSERT_MSG(false, wxT("Unexpected DillEvent type."));
+        break;
+    }
 }
