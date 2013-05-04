@@ -1,0 +1,5 @@
+Windows:
+ 1. Get boost 1.53.0 source tarball
+ 2. Extract tarball
+ 3. cd boost_1_53_0; bootstrap; b2 toolset=msvc-10.0 link=static runtime-link=shared; b2 toolset=msvc-10.0 link=static runtime-link=static
+
