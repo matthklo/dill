@@ -95,6 +95,7 @@
     <ClCompile Include="..\..\..\dlv\dlv_frame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\dlv\dlv.h" />
     <ClInclude Include="..\..\..\dlv\dlv_app.h" />
     <ClInclude Include="..\..\..\dlv\dlv_dillevt.h" />
     <ClInclude Include="..\..\..\dlv\dlv_frame.h" />

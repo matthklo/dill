@@ -28,7 +28,8 @@
 
 #pragma once
 
-#include <wx/wx.h>
+#include "dlv.h"
+#include <wx/notebook.h>
 
 class DlvFrame : public wxFrame
 {
@@ -37,11 +38,14 @@ public:
 
     void OnQuit(wxCommandEvent &ev);
     void OnAbout(wxCommandEvent &ev);
+    void OnUpdateConnStat(wxCommandEvent &ev);
 
 private:
     DECLARE_EVENT_TABLE()
 
     void setupMenuBar();
     void setupStatusBar();
+
+    wxNotebook    mChannelNotebook;
 };
 

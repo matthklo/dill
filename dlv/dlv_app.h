@@ -28,11 +28,9 @@
 
 #pragma once
 
-#include <wx/wx.h>
-#include <dill.h>
-#include "dlv_dillevt.h"
-
-#define DLV_VERSION_STRING wxT("DLV 0.1.0")
+#include "dlv.h"
+#include <vector>
+#include <string>
 
 class  DlvFrame;
 
@@ -43,7 +41,8 @@ public:
     int  OnExit();
     void OnTimeout(wxTimerEvent& e);
 
-    DlvFrame* getMainFrame();
+    DlvFrame*    getMainFrame();
+    unsigned int getChannelNames(std::vector<std::string> &outCopy);
 
 private:
     DECLARE_EVENT_TABLE()
@@ -51,6 +50,7 @@ private:
     static void dillCallback(DillEvent* e);
     void updateConnectionStatus();
 
+    std::vector<std::string>     mChannelNames;
     wxTimer*                     mTimer;
     DlvFrame*                    mFrame;
     wxString                     mServerAddr;

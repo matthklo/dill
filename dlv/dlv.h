@@ -29,40 +29,22 @@
 #pragma once
 
 #include <wx/wx.h>
+#include <dill.h>
+#include "dlv_dillevt.h"
+
+#define DLVSTR_ABOUT_MSG               wxT("DLV 0.1.0")
+#define DLVSTR_ABOUT_TITLE             wxT("About DLV")
+#define DLVSTR_HELPMENU_LABEL          wxT("&Help")
+#define DLVSTR_HELPMENU_ABOUT_LABEL    wxT("&About...\tF1")
+#define DLVSTR_HELPMENU_ABOUT_COMMENT  wxT("Show about dialog")
+#define DLVSTR_FILEMENU_LABEL          wxT("&File")
+#define DLVSTR_FILEMENU_EXIT_LABEL     wxT("E&xit\tAlt-X")
+#define DLVSTR_FILEMENU_EXIT_COMMENT   wxT("Quit this program")
+#define DLVSTR_STATMSG_FORMAT          wxT("Server [%s:%d]  Available Channels: %d")
 
 enum
 {
-    DLVEVT_CONNSTAT = 1,
-    DLVEVT_LOGDATA,
-    DLVEVT_REGDATA,
-};
-
-// http://wiki.wxwidgets.org/Custom_Events
-// search for the section named "The Normal Case"
-
-extern const wxEventType DlvDillEvent;
-
-
-struct DlvEvtDataConnStatus
-{
-    wxString ServerAddr;
-    int      ServerPort;
-    int      ChannelNum;
-};
-
-struct DlvEvtDataLog
-{
-    unsigned char Priority;
-    unsigned int  Channel;
-    wxString      Tag;
-    wxString      Message;
-    unsigned int  TimestampSec;
-    unsigned int  TimestampMs;
-};
-
-struct DlvEvtDataRegister
-{
-    unsigned int  Channel;
-    wxString      Register;
-    wxString      Content;
+    DLVID_MAINFRAME = 5299,
+    DLVID_CHANNELNOTEBOOK,
+    DLVID_CONNSTATTIMER,
 };

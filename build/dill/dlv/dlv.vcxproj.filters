@@ -35,5 +35,8 @@
     <ClInclude Include="..\..\..\dlv\dlv_dillevt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\dlv\dlv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -32,7 +32,7 @@
 IMPLEMENT_APP(DlvApp)
 
 BEGIN_EVENT_TABLE(DlvApp, wxApp)
-    EVT_TIMER(-1, DlvApp::OnTimeout)
+    EVT_TIMER(DLVID_CONNSTATTIMER, DlvApp::OnTimeout)
 END_EVENT_TABLE()
 
 bool DlvApp::OnInit()
@@ -76,7 +76,7 @@ bool DlvApp::OnInit()
 
     // Kick off a periodical timer for updating
     // server information on status bar
-    mTimer = new wxTimer(this);
+    mTimer = new wxTimer(this, DLVID_CONNSTATTIMER);
     mTimer->Start(3000);
 
     return true;
@@ -155,4 +155,10 @@ void DlvApp::dillCallback(DillEvent *e)
         wxASSERT_MSG(false, wxT("Unexpected DillEvent type."));
         break;
     }
+}
+
+unsigned int DlvApp::getChannelNames(std::vector<std::string> &outCopy)
+{
+    outCopy = mChannelNames;
+    return outCopy.size();
 }
