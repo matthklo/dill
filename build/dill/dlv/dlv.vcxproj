@@ -75,6 +75,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)/../../dep/wxMSW-2.8.12/lib/vc_lib;$(SolutionDir)/../../dep/boost_1_53_0/stage/lib;$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>comctl32.lib;rpcrt4.lib;dill.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /d /y /i $(SolutionDir)\..\..\dlv\resource $(OutDir)\resource</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -91,12 +94,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\dlv\dlv_app.cpp" />
+    <ClCompile Include="..\..\..\dlv\dlv_channelpage.cpp" />
     <ClCompile Include="..\..\..\dlv\dlv_dillevt.cpp" />
     <ClCompile Include="..\..\..\dlv\dlv_frame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\dlv\dlv.h" />
     <ClInclude Include="..\..\..\dlv\dlv_app.h" />
+    <ClInclude Include="..\..\..\dlv\dlv_channelpage.h" />
     <ClInclude Include="..\..\..\dlv\dlv_dillevt.h" />
     <ClInclude Include="..\..\..\dlv\dlv_frame.h" />
   </ItemGroup>

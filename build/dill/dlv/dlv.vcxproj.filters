@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\..\dlv\dlv_dillevt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\dlv\dlv_channelpage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\dlv\dlv_app.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\dlv\dlv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\dlv\dlv_channelpage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

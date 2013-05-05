@@ -28,6 +28,7 @@
 
 #include "dlv_app.h"
 #include "dlv_frame.h"
+#include "dlv_channelpage.h"
 
 BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
     EVT_MENU(wxID_ABOUT, DlvFrame::OnAbout)
@@ -36,7 +37,7 @@ BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
 END_EVENT_TABLE()
 
 DlvFrame::DlvFrame()
-       : wxFrame(NULL, DLVID_MAINFRAME, wxT("Dill Log Viewer"))
+       : wxFrame(NULL, DLVID_MAINFRAME, DLVSTR_MAINFRAME_TITLE, wxDefaultPosition, wxSize(640, 480))
        , mChannelNotebook(this, DLVID_CHANNELNOTEBOOK)
 {
     // Set the frame icon
@@ -44,6 +45,8 @@ DlvFrame::DlvFrame()
 
     setupMenuBar();
     setupStatusBar();
+
+    mChannelNotebook.AddPage(new DlvChannelPage(&mChannelNotebook), wxT("Matt"));
 }
 
 void DlvFrame::OnAbout(wxCommandEvent& event)
@@ -87,7 +90,7 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
     if (data)
     {
         wxString statMsg;
-        statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerPort,
+        statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerAddr,
                        data->ServerPort, data->ChannelNum);
         SetStatusText(statMsg);
         delete data;

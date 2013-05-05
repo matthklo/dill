@@ -28,40 +28,39 @@
 
 #pragma once
 
-#include <wx/wx.h>
-#include <dill.h>
-#include "dlv_dillevt.h"
+#include "dlv.h"
+#include <wx/listctrl.h>
+#include <wx/statline.h>
 
-#define DLVSTR_MAINFRAME_TITLE         wxT("DLV - Dill Log Viewer")
-#define DLVSTR_ABOUT_MSG               wxT("DLV 0.1.0")
-#define DLVSTR_ABOUT_TITLE             wxT("About DLV")
-#define DLVSTR_HELPMENU_LABEL          wxT("&Help")
-#define DLVSTR_HELPMENU_ABOUT_LABEL    wxT("&About...\tF1")
-#define DLVSTR_HELPMENU_ABOUT_COMMENT  wxT("Show about dialog")
-#define DLVSTR_FILEMENU_LABEL          wxT("&File")
-#define DLVSTR_FILEMENU_EXIT_LABEL     wxT("E&xit\tAlt-X")
-#define DLVSTR_FILEMENU_EXIT_COMMENT   wxT("Quit this program")
-#define DLVSTR_STATMSG_FORMAT          wxT("Server [%s:%d]  Available Channels: %d")
-#define DLVSTR_PRIORITY_VERBOSE        wxT("Verbose")
-#define DLVSTR_PRIORITY_DEBUG          wxT("Debug")
-#define DLVSTR_PRIORITY_INFO           wxT("Info")
-#define DLVSTR_PRIORITY_WARN           wxT("Warn")
-#define DLVSTR_PRIORITY_ERROR          wxT("Error")
-#define DLVSTR_CHPAGE_PRIORITY_LABEL   wxT("Priority:")
-#define DLVSTR_CHPAGE_FILTER_LABEL     wxT("Filter:")
-
-enum
+class DlvChannelPage : public wxPanel
 {
-    DLVID_MAINFRAME = 5299,
-    DLVID_CHANNELNOTEBOOK,
-    DLVID_CONNSTATTIMER,
-    DLVID_LOGLISTCTRL,
-    DLVID_REGLISTCTRL,
-    DLVID_PRIORITYCOMBO,
-    DLVID_FILTERTEXTCTRL,
-    DLVID_SHOWREGBTN,
-    DLVID_FILTERADDBTN,
-    DLVID_FILTERDELBTN,
-    DLVID_FILTEREDITBTN,
-    DLVID_LOGCLEARBTN,
+public:
+    DlvChannelPage(wxWindow *parent);
+
+private:
+    DECLARE_EVENT_TABLE()
+
+    wxBoxSizer*        mMainVBoxSizer;
+    wxBoxSizer*        mButtonHBoxSizer;
+    wxBoxSizer*        mPriorityFilterHBoxSizer;
+    wxBoxSizer*        mContentHBoxSizer;
+    wxBoxSizer*        mLogVBoxSizer;
+    wxBoxSizer*        mFilterHBoxSizer;
+
+    wxListCtrl*        mLogListCtrl;
+    wxListCtrl*        mRegListCtrl;
+    wxBitmapButton*    mShowRegViewButton;
+    wxBitmapButton*    mFilterAddButton;
+    wxBitmapButton*    mFilterEditButton;
+    wxBitmapButton*    mFilterDeleteButton;
+    wxBitmapButton*    mClearLogButton;
+    wxComboBox*        mPriorityComboBox;
+    wxTextCtrl*        mFilterTextCtrl;
+
+    wxImage*           mFilterAddImage;
+    wxImage*           mFilterEditImage;
+    wxImage*           mFilterDeleteImage;
+    wxImage*           mClearLogImage;
+    wxImage*           mShowRegViewImage;
+    wxImage*           mHideRegViewImage;
 };
