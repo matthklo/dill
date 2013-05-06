@@ -39,6 +39,8 @@ public:
     void OnQuit(wxCommandEvent &ev);
     void OnAbout(wxCommandEvent &ev);
     void OnUpdateConnStat(wxCommandEvent &ev);
+    void OnDillLogData(wxCommandEvent &ev);
+    void OnDillRegisterUpdate(wxCommandEvent &ev);
 
 private:
     DECLARE_EVENT_TABLE()
@@ -47,5 +49,6 @@ private:
     void setupStatusBar();
 
     wxNotebook    mChannelNotebook;
+    bool          mWaitingFirstChannel;
 };
 

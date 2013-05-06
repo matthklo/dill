@@ -38,6 +38,9 @@ public:
     DlvChannelPage(wxWindow *parent);
     ~DlvChannelPage();
 
+    void OnAppenLog(DlvEvtDataLog *logdata);
+    void OnUpdateRegister(DlvEvtDataRegister *regdata);
+
 private:
     DECLARE_EVENT_TABLE()
 

@@ -127,3 +127,11 @@ DlvChannelPage::~DlvChannelPage()
     delete mShowRegViewImage;  mShowRegViewImage = 0;
     delete mHideRegViewImage;  mHideRegViewImage = 0;
 }
+
+void DlvChannelPage::OnAppenLog(DlvEvtDataLog *logdata)
+{
+}
+
+void DlvChannelPage::OnUpdateRegister(DlvEvtDataRegister *regdata)
+{
+}

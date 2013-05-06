@@ -43,7 +43,7 @@ DILLAPI unsigned int dill_subscribe_init_to(int port, const char * addr);
 DILLAPI void         dill_subscribe_deinit();
 DILLAPI void         dill_subscribe_evcb(DILL_SUBSCRIBE_CBFN fn);
 
-DILLAPI int          dill_available_channels();
+DILLAPI unsigned int dill_available_channels();
 DILLAPI const char*  dill_channel_name(unsigned int index);
 DILLAPI unsigned int dill_subscribe_channel(unsigned int index, int subscribe);
 
@@ -58,7 +58,7 @@ namespace dill
     DILLAPI unsigned int subscribeInit(int port = DILL_DEFAULT_PORT, const char * addr = DILL_DEFAULT_ADDR);
     DILLAPI void         subscribeDeinit();
     
-    DILLAPI int          availableChannels();
+    DILLAPI unsigned int availableChannels();
     DILLAPI const char*  getChannelName(unsigned int index);
     DILLAPI bool         subscribeChannel(unsigned int index, bool subscribe = true);
     

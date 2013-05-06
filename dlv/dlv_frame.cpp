@@ -34,19 +34,20 @@ BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
     EVT_MENU(wxID_ABOUT, DlvFrame::OnAbout)
     EVT_MENU(wxID_EXIT,  DlvFrame::OnQuit)
     EVT_COMMAND(DLVEVT_CONNSTAT, DlvDillEvent, DlvFrame::OnUpdateConnStat)
+    EVT_COMMAND(DLVEVT_LOGDATA, DlvDillEvent, DlvFrame::OnDillLogData)
+    EVT_COMMAND(DLVEVT_REGDATA, DlvDillEvent, DlvFrame::OnDillRegisterUpdate)
 END_EVENT_TABLE()
 
 DlvFrame::DlvFrame()
        : wxFrame(NULL, DLVID_MAINFRAME, DLVSTR_MAINFRAME_TITLE, wxDefaultPosition, wxSize(640, 480))
        , mChannelNotebook(this, DLVID_CHANNELNOTEBOOK)
+       , mWaitingFirstChannel(true)
 {
     // Set the frame icon
     //SetIcon(wxIcon(mondrian_xpm));
 
     setupMenuBar();
     setupStatusBar();
-
-    mChannelNotebook.AddPage(new DlvChannelPage(&mChannelNotebook), wxT("Matt"));
 }
 
 void DlvFrame::OnAbout(wxCommandEvent& event)
@@ -93,6 +94,43 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
         statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerAddr,
                        data->ServerPort, data->ChannelNum);
         SetStatusText(statMsg);
+        delete data;
+
+        if (mWaitingFirstChannel && (data->ChannelNum > 0))
+        {
+            wxString chname = wxString::FromUTF8(wxGetApp().getChannelName(0));
+            DlvChannelPage *page = new DlvChannelPage(&mChannelNotebook);
+            mChannelNotebook.AddPage(page, chname);
+            wxGetApp().subscribeChannel(0, (void*)page);
+            mWaitingFirstChannel = false;
+        }
+    }
+}
+
+void DlvFrame::OnDillLogData(wxCommandEvent &ev)
+{
+    DlvEvtDataLog *data = (DlvEvtDataLog*) ev.GetClientData();
+    if (data)
+    {
+        DlvChannelPage *page = (DlvChannelPage*) wxGetApp().getChannelPageByID(data->Channel);
+        if (page)
+        {
+            page->OnAppenLog(data);
+        }
+        delete data;
+    }
+}
+
+void DlvFrame::OnDillRegisterUpdate(wxCommandEvent &ev)
+{
+    DlvEvtDataRegister *data = (DlvEvtDataRegister*) ev.GetClientData();
+    if (data)
+    {
+        DlvChannelPage *page = (DlvChannelPage*) wxGetApp().getChannelPageByID(data->Channel);
+        if (page)
+        {
+            page->OnUpdateRegister(data);
+        }
         delete data;
     }
 }

@@ -110,6 +110,11 @@ void DlvApp::updateConnectionStatus()
     stat->ServerPort = mServerPort;
     stat->ChannelNum = dill::availableChannels();
 
+    if (stat->ChannelNum != mChannelData.size())
+    {
+        refreshChannelData((stat->ChannelNum < mChannelData.size()));
+    }
+
     wxCommandEvent ev(DlvDillEvent, DLVEVT_CONNSTAT);
     ev.SetClientData(stat);
     wxPostEvent(mFrame, ev);
@@ -158,8 +163,79 @@ void DlvApp::dillCallback(DillEvent *e)
     }
 }
 
+const char* DlvApp::getChannelName(unsigned int id)
+{
+    if (id >= mChannelData.size())
+        return "";
+    return mChannelData[id].Name.c_str();
+}
+
 unsigned int DlvApp::getChannelNames(std::vector<std::string> &outCopy)
 {
-    outCopy = mChannelNames;
+    outCopy.clear();
+    for (std::vector<ChannelData>::iterator it = mChannelData.begin();
+         it != mChannelData.end(); it++)
+    {
+        outCopy.push_back((*it).Name);
+    }
     return outCopy.size();
+}
+
+void* DlvApp::getChannelPageByID(unsigned int id)
+{
+    return mChannelData[id].Page;
+}
+
+bool DlvApp::subscribeChannel(unsigned int channelId, void* pageId, bool subscribe)
+{
+    if (channelId >= mChannelData.size())
+        return false;
+
+    bool ret = dill::subscribeChannel(channelId, subscribe);
+    if (ret)
+    {
+        if (subscribe)
+            mChannelData[channelId].Page = pageId;
+        else
+            mChannelData[channelId].Page = 0;
+    }
+    return ret;
+}
+
+void DlvApp::refreshChannelData(bool fullRefresh)
+{
+    std::vector<ChannelData> oldData;
+
+    if (fullRefresh)
+    {
+        oldData = mChannelData;
+        mChannelData.clear();
+    }
+
+    for (unsigned int i = mChannelData.size(); i < dill::availableChannels(); ++i)
+    {
+        ChannelData data;
+        data.Page = 0;
+        data.Name = dill::getChannelName(i);
+        mChannelData.push_back(data);
+    }
+
+    if (fullRefresh)
+    {
+        // For each channel had paired with a page ptr in old data, 
+        // try pair it back to the same page ptr in new data.
+        for (unsigned int i=0; i<oldData.size(); ++i)
+        {
+            if (oldData[i].Page == 0) continue;
+
+            for (unsigned int j=0; j<mChannelData.size(); ++j)
+            {
+                if (mChannelData[j].Name == oldData[i].Name)
+                {
+                    mChannelData[j].Page = oldData[i].Page;
+                    break;
+                }
+            }
+        }
+    }
 }

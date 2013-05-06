@@ -90,7 +90,7 @@ public:
         return DILL_EC_UNKNOWN;
     }
 
-    int availableChannels()
+    unsigned int availableChannels()
     {
         if (isConnected())
         {
@@ -260,7 +260,7 @@ void dill_subscribe_evcb(DILL_SUBSCRIBE_CBFN fn)
     }
 }
 
-int dill_available_channels()
+unsigned int dill_available_channels()
 {
     if (_g_subscriber.get() != 0)
     {
@@ -301,7 +301,7 @@ namespace dill
         ::dill_subscribe_deinit();
     }
     
-    int availableChannels()
+    unsigned int availableChannels()
     {
         return ::dill_available_channels();
     }

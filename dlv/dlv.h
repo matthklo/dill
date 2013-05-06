@@ -43,7 +43,7 @@
 #define DLVSTR_FILEMENU_LABEL          wxT("&File")
 #define DLVSTR_FILEMENU_EXIT_LABEL     wxT("E&xit\tAlt-X")
 #define DLVSTR_FILEMENU_EXIT_COMMENT   wxT("Quit this program")
-#define DLVSTR_STATMSG_FORMAT          wxT("Server [%s:%d]  Available Channels: %d")
+#define DLVSTR_STATMSG_FORMAT          wxT("Server [%s:%d]  Available Channels: %u")
 #define DLVSTR_PRIORITY_VERBOSE        wxT("Verbose")
 #define DLVSTR_PRIORITY_DEBUG          wxT("Debug")
 #define DLVSTR_PRIORITY_INFO           wxT("Info")

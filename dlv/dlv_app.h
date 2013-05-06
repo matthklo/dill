@@ -42,15 +42,25 @@ public:
     void OnTimeout(wxTimerEvent& e);
 
     DlvFrame*    getMainFrame();
+    const char*  getChannelName(unsigned int id);
     unsigned int getChannelNames(std::vector<std::string> &outCopy);
+    void*        getChannelPageByID(unsigned int id);
+    bool         subscribeChannel(unsigned int channelId, void* page, bool subscribe = true);
 
 private:
     DECLARE_EVENT_TABLE()
 
-    static void dillCallback(DillEvent* e);
-    void updateConnectionStatus();
+    static void  dillCallback(DillEvent* e);
+           void  updateConnectionStatus();
+           void  refreshChannelData(bool fullRefresh);
 
-    std::vector<std::string>     mChannelNames;
+    struct ChannelData
+    {
+        void*       Page;
+        std::string Name;
+    };
+
+    std::vector<ChannelData>     mChannelData;
     wxTimer*                     mTimer;
     DlvFrame*                    mFrame;
     wxString                     mServerAddr;

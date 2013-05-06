@@ -45,9 +45,9 @@ extern const wxEventType DlvDillEvent;
 
 struct DlvEvtDataConnStatus
 {
-    wxString ServerAddr;
-    int      ServerPort;
-    int      ChannelNum;
+    wxString      ServerAddr;
+    int           ServerPort;
+    unsigned int  ChannelNum;
 };
 
 struct DlvEvtDataLog
