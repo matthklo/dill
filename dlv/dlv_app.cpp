@@ -85,6 +85,7 @@ bool DlvApp::OnInit()
 int DlvApp::OnExit()
 {
     mTimer->Stop();
+    delete mTimer; mTimer = 0;
 
     dill::subscribeDeinit();
     dill::serverDeinit(); // Should be no harm even we never init.

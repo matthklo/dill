@@ -34,23 +34,19 @@
 
 void DillServerNetIoCallable::asyncAccept()
 {
-    boost::asio::ip::tcp::socket *client_socket
-        = new boost::asio::ip::tcp::socket(*_iosvc);
-
-    _acceptor->async_accept(*client_socket,
+    _acceptor->async_accept(*_client_socket,
         boost::bind(&DillServerNetIoCallable::onAcceptFinished, this,
-            client_socket, boost::asio::placeholders::error));
+                    boost::asio::placeholders::error));
 }
 
-void DillServerNetIoCallable::onAcceptFinished(boost::asio::ip::tcp::socket *client_socket,
-    const boost::system::error_code& error)
+void DillServerNetIoCallable::onAcceptFinished(const boost::system::error_code& error)
 {
     if (error != boost::system::errc::success)
     {
-        client_socket->close();
-        delete client_socket;
+        _client_socket->close();
+        delete _client_socket;
     } else {
-        DillServerConnection *w = new DillServerConnection(this, client_socket);
+        DillServerConnection *w = new DillServerConnection(this, _client_socket);
         _conn_set.insert(w);
         w->asyncReadParcel();
 
@@ -58,6 +54,9 @@ void DillServerNetIoCallable::onAcceptFinished(boost::asio::ip::tcp::socket *cli
 
         asyncAccept();
     }
+
+    // For both case, a new socket object is needed for upcoming connection.
+    _client_socket = new boost::asio::ip::tcp::socket(*_iosvc);
 }
 
 DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize, unsigned int channels)
@@ -71,9 +70,9 @@ DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize,
     , _id(0)
     , _thread(0)
 {
-    _data_mtx     = new boost::mutex;
-    _iosvc        = new boost::asio::io_service;
-    _socket       = new boost::asio::ip::tcp::socket(*_iosvc);
+    _iosvc         = new boost::asio::io_service;
+    _server_socket = new boost::asio::ip::tcp::socket(*_iosvc);
+    _client_socket = new boost::asio::ip::tcp::socket(*_iosvc);
 
     try
     {
@@ -101,8 +100,15 @@ DillServerNetIoCallable::~DillServerNetIoCallable()
         _thread = 0;
     }
 
-    _socket->close();
-    delete _socket;
+    _client_socket->close();
+    delete _client_socket;
+
+    _acceptor->close();
+    delete _acceptor;
+
+    _server_socket->close();
+    delete _server_socket;
+
     delete _iosvc;
 }
 

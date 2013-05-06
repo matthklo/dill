@@ -64,10 +64,10 @@ public:
     void operator() ();
 
 private:
-    boost::mutex                        *_data_mtx;
     boost::asio::io_service             *_iosvc;
     boost::asio::io_service::work       *_iowork;
-    boost::asio::ip::tcp::socket        *_socket;
+    boost::asio::ip::tcp::socket        *_client_socket;
+    boost::asio::ip::tcp::socket        *_server_socket;
     boost::asio::ip::tcp::acceptor      *_acceptor;
     boost::thread                       *_thread;
     bool                                 _sig_exit;
@@ -81,8 +81,7 @@ private:
     std::vector<DillServerChannel*>      _channel_data;
 
     void asyncAccept();
-    void onAcceptFinished(boost::asio::ip::tcp::socket *client_socket,
-        const boost::system::error_code& error);
+    void onAcceptFinished(const boost::system::error_code& error);
 
     void disconnect(DillServerConnection *conn);
 };

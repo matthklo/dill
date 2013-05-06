@@ -28,6 +28,8 @@
 
 #pragma once
 
+//#include <vld.h>
+
 #include <wx/wx.h>
 #include <dill.h>
 #include "dlv_dillevt.h"

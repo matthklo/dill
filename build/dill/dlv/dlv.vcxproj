@@ -67,7 +67,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)/../../libdill/inc; $(SolutionDir)/../../dep/wxMSW-2.8.12/include; $(SolutionDir)/../../dep/wxMSW-2.8.12/include/msvc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/../../libdill/inc;$(SolutionDir)/../../dep/wxMSW-2.8.12/include;$(SolutionDir)/../../dep/wxMSW-2.8.12/include/msvc</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DILL_STATIC_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>

@@ -43,33 +43,37 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
 {
     // Load icons
     wxImage::AddHandler(new wxPNGHandler);
-    mFilterAddImage = new wxImage(wxT("resource/add-icon.png"), wxBITMAP_TYPE_PNG);
-    mFilterEditImage = new wxImage(wxT("resource/edit-icon.png"), wxBITMAP_TYPE_PNG);
+    mFilterAddImage    = new wxImage(wxT("resource/add-icon.png"), wxBITMAP_TYPE_PNG);
+    mFilterEditImage   = new wxImage(wxT("resource/edit-icon.png"), wxBITMAP_TYPE_PNG);
     mFilterDeleteImage = new wxImage(wxT("resource/remove-icon.png"), wxBITMAP_TYPE_PNG);
-    mClearLogImage = new wxImage(wxT("resource/clear-icon.png"), wxBITMAP_TYPE_PNG);
-    mShowRegViewImage = new wxImage(wxT("resource/logreg-icon.png"), wxBITMAP_TYPE_PNG);
-    mHideRegViewImage = new wxImage(wxT("resource/logonly-icon.png"), wxBITMAP_TYPE_PNG);
+    mClearLogImage     = new wxImage(wxT("resource/clear-icon.png"), wxBITMAP_TYPE_PNG);
+    mShowRegViewImage  = new wxImage(wxT("resource/logreg-icon.png"), wxBITMAP_TYPE_PNG);
+    mHideRegViewImage  = new wxImage(wxT("resource/logonly-icon.png"), wxBITMAP_TYPE_PNG);
 
     // Initiate all components
-    mLogListCtrl = new wxListCtrl(this, DLVID_LOGLISTCTRL, wxDefaultPosition, 
-                                  wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
-    mRegListCtrl = new wxListCtrl(this, DLVID_REGLISTCTRL, wxDefaultPosition, 
-                                  wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
-    mShowRegViewButton = new wxBitmapButton(this, DLVID_SHOWREGBTN, wxBitmap(*mShowRegViewImage),
-                                            wxDefaultPosition, wxSize(28, 28));
-    mFilterAddButton = new wxBitmapButton(this, DLVID_FILTERADDBTN, wxBitmap(*mFilterAddImage),
-                                          wxDefaultPosition, wxSize(28, 28));
-    mFilterEditButton = new wxBitmapButton(this, DLVID_FILTEREDITBTN, wxBitmap(*mFilterEditImage),
-                                           wxDefaultPosition, wxSize(28, 28));
-    mFilterDeleteButton = new wxBitmapButton(this, DLVID_FILTERDELBTN, wxBitmap(*mFilterDeleteImage),
-                                             wxDefaultPosition, wxSize(28, 28));
-    mClearLogButton = new wxBitmapButton(this, DLVID_LOGCLEARBTN, wxBitmap(*mClearLogImage),
-                                         wxDefaultPosition, wxSize(28, 28));
-    wxString priorities[] = { DLVSTR_PRIORITY_VERBOSE, DLVSTR_PRIORITY_DEBUG, DLVSTR_PRIORITY_INFO, 
-                              DLVSTR_PRIORITY_WARN, DLVSTR_PRIORITY_ERROR };
-    mPriorityComboBox = new wxComboBox(this, DLVID_PRIORITYCOMBO, DLVSTR_PRIORITY_VERBOSE,
-                                       wxDefaultPosition, wxDefaultSize, 5, priorities, wxCB_READONLY);
-    mFilterTextCtrl = new wxTextCtrl(this, DLVID_FILTERTEXTCTRL);
+    mLogListCtrl          = new wxListCtrl(this, DLVID_LOGLISTCTRL, wxDefaultPosition, 
+                                           wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
+    mRegListCtrl          = new wxListCtrl(this, DLVID_REGLISTCTRL, wxDefaultPosition, 
+                                           wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
+    mShowRegViewButton    = new wxBitmapButton(this, DLVID_SHOWREGBTN, wxBitmap(*mShowRegViewImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+    mFilterAddButton      = new wxBitmapButton(this, DLVID_FILTERADDBTN, wxBitmap(*mFilterAddImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+    mFilterEditButton     = new wxBitmapButton(this, DLVID_FILTEREDITBTN, wxBitmap(*mFilterEditImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+    mFilterDeleteButton   = new wxBitmapButton(this, DLVID_FILTERDELBTN, wxBitmap(*mFilterDeleteImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+    mClearLogButton       = new wxBitmapButton(this, DLVID_LOGCLEARBTN, wxBitmap(*mClearLogImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+
+    wxString priorities[] = { DLVSTR_PRIORITY_VERBOSE, 
+                              DLVSTR_PRIORITY_DEBUG, 
+                              DLVSTR_PRIORITY_INFO, 
+                              DLVSTR_PRIORITY_WARN, 
+                              DLVSTR_PRIORITY_ERROR };
+    mPriorityComboBox     = new wxComboBox(this, DLVID_PRIORITYCOMBO, DLVSTR_PRIORITY_VERBOSE,
+                                           wxDefaultPosition, wxDefaultSize, 5, priorities, wxCB_READONLY);
+    mFilterTextCtrl       = new wxTextCtrl(this, DLVID_FILTERTEXTCTRL);
 
     // Config all layout and size-proportion
     mPriorityFilterHBoxSizer->Add(new wxStaticText(this, wxID_ANY, DLVSTR_CHPAGE_PRIORITY_LABEL),
@@ -112,4 +116,14 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     mMainVBoxSizer->Add(mContentHBoxSizer, 1, wxEXPAND);
 
     SetSizer(mMainVBoxSizer);
+}
+
+DlvChannelPage::~DlvChannelPage()
+{
+    delete mFilterAddImage;    mFilterAddImage = 0;
+    delete mFilterEditImage;   mFilterEditImage = 0;
+    delete mFilterDeleteImage; mFilterDeleteImage = 0;
+    delete mClearLogImage;     mClearLogImage = 0;
+    delete mShowRegViewImage;  mShowRegViewImage = 0;
+    delete mHideRegViewImage;  mHideRegViewImage = 0;
 }

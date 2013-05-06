@@ -36,6 +36,7 @@ class DlvChannelPage : public wxPanel
 {
 public:
     DlvChannelPage(wxWindow *parent);
+    ~DlvChannelPage();
 
 private:
     DECLARE_EVENT_TABLE()
