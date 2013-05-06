@@ -84,7 +84,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration); $(SolutionDir)\..\..\dep\boost_1_53_0\stage\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\$(Configuration);$(SolutionDir)\..\..\dep\boost_1_53_0\stage\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>dill.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
