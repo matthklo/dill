@@ -115,6 +115,14 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     mMainVBoxSizer->AddSpacer(5);
     mMainVBoxSizer->Add(mContentHBoxSizer, 1, wxEXPAND);
 
+    // Column header for both list ctrls
+    mRegListCtrl->InsertColumn(0, wxT("Name"), wxLIST_FORMAT_LEFT, 50);
+    mRegListCtrl->InsertColumn(1, wxT("Content"), wxLIST_FORMAT_LEFT, 100);
+    mLogListCtrl->InsertColumn(0, wxT("Date"), wxLIST_FORMAT_LEFT, 100);
+    mLogListCtrl->InsertColumn(1, wxT("Priority"), wxLIST_FORMAT_LEFT, 50);
+    mLogListCtrl->InsertColumn(2, wxT("Tag"), wxLIST_FORMAT_LEFT, 100);
+    mLogListCtrl->InsertColumn(3, wxT("Message"), wxLIST_FORMAT_LEFT, 400);
+
     SetSizer(mMainVBoxSizer);
 }
 

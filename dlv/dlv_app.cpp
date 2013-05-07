@@ -95,7 +95,8 @@ int DlvApp::OnExit()
 
 void DlvApp::OnTimeout(wxTimerEvent& e)
 {
-    updateConnectionStatus();
+    if (mTimer)
+        updateConnectionStatus();
 }
 
 DlvFrame* DlvApp::getMainFrame()
