@@ -27,9 +27,12 @@
  */
 
 #include "dlv_channelpage.h"
+#include <wx/gdicmn.h>
 
 BEGIN_EVENT_TABLE(DlvChannelPage, wxPanel)
-    EVT_BUTTON(DLVID_SHOWREGBTN, DlvChannelPage::OnShowRegViewButtonClicked)
+    EVT_BUTTON(DLVID_SHOWREGBTN,  DlvChannelPage::OnShowRegViewButtonClicked)
+    EVT_BUTTON(DLVID_LOGCLEARBTN, DlvChannelPage::OnLogClear)
+    EVT_COMBOBOX(DLVID_PRIORITYCOMBO, DlvChannelPage::OnPriorityFilterChanged)
 END_EVENT_TABLE()
 
 DlvChannelPage::DlvChannelPage(wxWindow *parent)
@@ -115,19 +118,15 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     mMainVBoxSizer->AddSpacer(5);
     mMainVBoxSizer->Add(mContentHBoxSizer, 1, wxEXPAND);
 
-    // Column header for both list ctrls
-    mRegListCtrl->InsertColumn(0, wxT("Name"), wxLIST_FORMAT_LEFT, 50);
-    mRegListCtrl->InsertColumn(1, wxT("Content"), wxLIST_FORMAT_LEFT, 100);
-    mLogListCtrl->InsertColumn(0, wxT("Date"), wxLIST_FORMAT_LEFT, 100);
-    mLogListCtrl->InsertColumn(1, wxT("Priority"), wxLIST_FORMAT_LEFT, 50);
-    mLogListCtrl->InsertColumn(2, wxT("Tag"), wxLIST_FORMAT_LEFT, 100);
-    mLogListCtrl->InsertColumn(3, wxT("Message"), wxLIST_FORMAT_LEFT, 400);
+    resetContent();
 
     SetSizer(mMainVBoxSizer);
 }
 
 DlvChannelPage::~DlvChannelPage()
 {
+    resetContent();
+
     delete mFilterAddImage;    mFilterAddImage = 0;
     delete mFilterEditImage;   mFilterEditImage = 0;
     delete mFilterDeleteImage; mFilterDeleteImage = 0;
@@ -138,10 +137,24 @@ DlvChannelPage::~DlvChannelPage()
 
 void DlvChannelPage::OnAppenLog(DlvEvtDataLog *logdata)
 {
+    mLogData.push_back(logdata);
+    if (logdata->Priority >= getCurrentPriorityFilterLevel())
+    {
+        renderLog(logdata);
+    }
 }
 
 void DlvChannelPage::OnUpdateRegister(DlvEvtDataRegister *regdata)
 {
+    std::pair<wxString, long> mapValue(regdata->Register, (long)mRegListCtrl->GetItemCount());
+    std::pair<RegisterMap::iterator, bool> result;
+
+    result = mRegisterData.insert(mapValue);
+    if ( result.second )
+    {
+        mRegListCtrl->InsertItem(result.first->second, regdata->Register);
+    }
+    mRegListCtrl->SetItem(result.first->second, 1, regdata->Content);
 }
 
 void DlvChannelPage::OnShowRegViewButtonClicked(wxCommandEvent& ev)
@@ -155,4 +168,85 @@ void DlvChannelPage::OnShowRegViewButtonClicked(wxCommandEvent& ev)
         mShowRegViewButton->SetBitmapLabel(wxBitmap(*mHideRegViewImage));
     }
     mContentHBoxSizer->Layout();
+}
+
+void DlvChannelPage::OnLogClear(wxCommandEvent& ev)
+{
+    resetContent();
+}
+
+void DlvChannelPage::resetContent()
+{
+    resetLogContent();
+    resetRegisterContent();
+}
+
+void DlvChannelPage::resetLogContent(bool deleteRaw)
+{
+    mLogListCtrl->ClearAll();
+    if (deleteRaw)
+    {
+        for (LogDataVector::iterator it = mLogData.begin(); it != mLogData.end(); it++)
+            delete *it;
+        mLogData.clear();
+    }
+
+    // setup column headers
+    mLogListCtrl->InsertColumn(0, wxT("Date"), wxLIST_FORMAT_LEFT, 120);
+    mLogListCtrl->InsertColumn(1, wxT("Pri"), wxLIST_FORMAT_LEFT, 30);
+    mLogListCtrl->InsertColumn(2, wxT("Tag"), wxLIST_FORMAT_LEFT, 80);
+    mLogListCtrl->InsertColumn(3, wxT("Message"), wxLIST_FORMAT_LEFT, 400);
+}
+
+void DlvChannelPage::resetRegisterContent()
+{
+    mRegListCtrl->ClearAll();
+    mRegisterData.clear();
+
+    // setup column headers
+    mRegListCtrl->InsertColumn(0, wxT("Name"), wxLIST_FORMAT_LEFT, 50);
+    mRegListCtrl->InsertColumn(1, wxT("Content"), wxLIST_FORMAT_LEFT, 100);
+}
+
+void DlvChannelPage::OnPriorityFilterChanged(wxCommandEvent& ev)
+{
+    resetLogContent(false);
+
+    for (LogDataVector::iterator it = mLogData.begin();
+         it != mLogData.end(); it++)
+    {
+        if ((*it)->Priority >= getCurrentPriorityFilterLevel())
+            renderLog(*it);
+    }
+}
+
+unsigned char DlvChannelPage::getCurrentPriorityFilterLevel()
+{
+    return (unsigned char)mPriorityComboBox->GetCurrentSelection();
+}
+
+void DlvChannelPage::renderLog(DlvEvtDataLog *logdata)
+{
+    static wxColourDatabase colorDB;
+    static wxColour textColors[] = { colorDB.Find(wxT("BLACK")), 
+                                     colorDB.Find(wxT("BLUE")), 
+                                     colorDB.Find(wxT("FOREST GREEN")), 
+                                     colorDB.Find(wxT("ORANGE")),
+                                     colorDB.Find(wxT("RED")) };
+    static wxString priorityLabels[] = { wxT("V"), wxT("D"), wxT("I"), wxT("W"), wxT("E") };
+
+    int pos = mLogListCtrl->GetItemCount();
+
+    wxDateTime date((time_t)logdata->TimestampSec);
+    wxString dateStr;
+    dateStr.Printf(wxT("%02d-%02d %02d:%02d:%02d.%03u"), date.GetMonth(), date.GetDay(),
+        date.GetHour(), date.GetMinute(), date.GetSecond(), logdata->TimestampMs);
+    mLogListCtrl->InsertItem(pos, dateStr);
+    mLogListCtrl->SetItem(pos, 1, priorityLabels[logdata->Priority]);
+    mLogListCtrl->SetItem(pos, 2, logdata->Tag);
+    mLogListCtrl->SetItem(pos, 3, logdata->Message);
+    mLogListCtrl->SetItemTextColour(pos, textColors[logdata->Priority]);
+
+    // TODO: scroll to the bottom *conditionally*
+    mLogListCtrl->EnsureVisible(pos);
 }

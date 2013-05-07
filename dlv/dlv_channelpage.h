@@ -31,6 +31,8 @@
 #include "dlv.h"
 #include <wx/listctrl.h>
 #include <wx/statline.h>
+#include <vector>
+#include <map>
 
 class DlvChannelPage : public wxPanel
 {
@@ -41,10 +43,18 @@ public:
     void OnAppenLog(DlvEvtDataLog *logdata);
     void OnUpdateRegister(DlvEvtDataRegister *regdata);
 
-    void OnShowRegViewButtonClicked(wxCommandEvent& ev); 
+    void OnShowRegViewButtonClicked(wxCommandEvent& ev);
+    void OnLogClear(wxCommandEvent& ev);
+    void OnPriorityFilterChanged(wxCommandEvent& ev);
 
 private:
     DECLARE_EVENT_TABLE()
+
+    void renderLog(DlvEvtDataLog *logdata);
+    void resetContent();
+    void resetLogContent(bool deleteRaw = true);
+    void resetRegisterContent();
+    unsigned char getCurrentPriorityFilterLevel();
 
     wxBoxSizer*        mMainVBoxSizer;
     wxBoxSizer*        mButtonHBoxSizer;
@@ -69,4 +79,18 @@ private:
     wxImage*           mClearLogImage;
     wxImage*           mShowRegViewImage;
     wxImage*           mHideRegViewImage;
+
+    typedef std::vector<DlvEvtDataLog*> LogDataVector;
+    std::vector<DlvEvtDataLog*> mLogData;
+
+    struct StringLess : std::binary_function<wxString, wxString, bool>
+    {
+        bool operator() (const wxString& a, const wxString& b) const
+        {
+            return (a.compare(b) < 0);
+        }
+    };
+
+    typedef std::map<wxString, long, StringLess> RegisterMap;
+    std::map<wxString, long, StringLess> mRegisterData;
 };

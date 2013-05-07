@@ -103,7 +103,6 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
             wxGetApp().subscribeChannel(0, (void*)page);
             mWaitingFirstChannel = false;
         }
-
         delete data;
     }
 }
@@ -118,7 +117,6 @@ void DlvFrame::OnDillLogData(wxCommandEvent &ev)
         {
             page->OnAppenLog(data);
         }
-        delete data;
     }
 }
 

@@ -51,11 +51,11 @@
 
 
 
-#define DILL_PRIORITY_VERBOSE 2
-#define DILL_PRIORITY_DEBUG 3
-#define DILL_PRIORITY_INFO 4
-#define DILL_PRIORITY_WARN 5
-#define DILL_PRIORITY_ERROR 6
+#define DILL_PRIORITY_VERBOSE 0
+#define DILL_PRIORITY_DEBUG 1
+#define DILL_PRIORITY_INFO 2
+#define DILL_PRIORITY_WARN 3
+#define DILL_PRIORITY_ERROR 4
 
 #define DILL_EVENT_LOG 0          // subscriber, server
 #define DILL_EVENT_REG 1          // subscriber, server

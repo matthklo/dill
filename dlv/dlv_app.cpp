@@ -139,7 +139,7 @@ void DlvApp::dillCallback(DillEvent *e)
             data->Message = wxString::FromUTF8(e->Content);
             data->Priority = e->Priority;
             data->TimestampSec = e->TimeStamp1;
-            data->TimestampMs = e->TimeStamp2;
+            data->TimestampMs = (e->TimeStamp2 / 1000);
             
             wxCommandEvent ev(DlvDillEvent, DLVEVT_LOGDATA);
             ev.SetClientData(data);
