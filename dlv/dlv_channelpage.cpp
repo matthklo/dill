@@ -29,6 +29,44 @@
 #include "dlv_channelpage.h"
 #include <wx/gdicmn.h>
 
+enum _LOGHDRIDX
+{
+    LOG_HDRIDX_DATE = 0,
+    LOG_HDRIDX_PRI,
+    LOG_HDRIDX_TAG,
+    LOG_HDRIDX_MSG,
+
+    LOG_HDRNUM,
+};
+
+struct _LOGHDR
+{
+    wxString   Label;
+    int        Width;
+} _LogHeaders[LOG_HDRNUM] = { 
+        {DLVSTR_LOGHDR_DATE,      120}, 
+        {DLVSTR_LOGHDR_PRIORITY,   30}, 
+        {DLVSTR_LOGHDR_TAG,        80}, 
+        {DLVSTR_LOGHDR_MESSAGE,   400},
+    };
+
+enum _REGHDRIDX
+{
+    REG_HDRIDX_NAME = 0,
+    REG_HDRIDX_CNT,
+
+    REG_HDRNUM,
+};
+
+struct _REGHDR
+{
+    wxString   Label;
+    int        Width;
+} _RegHeaders[REG_HDRNUM] = { 
+        {DLVSTR_REGHDR_NAME,     50}, 
+        {DLVSTR_REGHDR_CONTENT, 100}, 
+    };
+
 BEGIN_EVENT_TABLE(DlvChannelPage, wxPanel)
     EVT_BUTTON(DLVID_SHOWREGBTN,  DlvChannelPage::OnShowRegViewButtonClicked)
     EVT_BUTTON(DLVID_LOGCLEARBTN, DlvChannelPage::OnLogClear)
@@ -118,7 +156,15 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     mMainVBoxSizer->AddSpacer(5);
     mMainVBoxSizer->Add(mContentHBoxSizer, 1, wxEXPAND);
 
-    resetContent();
+    for (unsigned int i=0; i<LOG_HDRNUM; ++i)
+    {
+        mLogListCtrl->InsertColumn(i, _LogHeaders[i].Label, wxLIST_FORMAT_LEFT, _LogHeaders[i].Width);
+    }
+
+    for (unsigned int i=0; i<REG_HDRNUM; ++i)
+    {
+        mRegListCtrl->InsertColumn(i, _RegHeaders[i].Label, wxLIST_FORMAT_LEFT, _RegHeaders[i].Width);
+    }
 
     SetSizer(mMainVBoxSizer);
 }
@@ -150,11 +196,12 @@ void DlvChannelPage::OnUpdateRegister(DlvEvtDataRegister *regdata)
     std::pair<RegisterMap::iterator, bool> result;
 
     result = mRegisterData.insert(mapValue);
+    long pos = result.first->second;
     if ( result.second )
     {
-        mRegListCtrl->InsertItem(result.first->second, regdata->Register);
+        mRegListCtrl->InsertItem(pos, regdata->Register);
     }
-    mRegListCtrl->SetItem(result.first->second, 1, regdata->Content);
+    mRegListCtrl->SetItem(pos, REG_HDRIDX_CNT, regdata->Content);
 }
 
 void DlvChannelPage::OnShowRegViewButtonClicked(wxCommandEvent& ev)
@@ -183,6 +230,15 @@ void DlvChannelPage::resetContent()
 
 void DlvChannelPage::resetLogContent(bool deleteRaw)
 {
+    // Save column width settings, use default value for initial reset ( width = 0 )
+    int colWidth[LOG_HDRNUM] = {0};
+    for (unsigned int i=0; i<LOG_HDRNUM; ++i)
+    {
+        colWidth[i] = mLogListCtrl->GetColumnWidth(i);
+        if (0 == colWidth[i])
+            colWidth[i] = _LogHeaders[i].Width;
+    }
+
     mLogListCtrl->ClearAll();
     if (deleteRaw)
     {
@@ -192,20 +248,31 @@ void DlvChannelPage::resetLogContent(bool deleteRaw)
     }
 
     // setup column headers
-    mLogListCtrl->InsertColumn(0, wxT("Date"), wxLIST_FORMAT_LEFT, 120);
-    mLogListCtrl->InsertColumn(1, wxT("Pri"), wxLIST_FORMAT_LEFT, 30);
-    mLogListCtrl->InsertColumn(2, wxT("Tag"), wxLIST_FORMAT_LEFT, 80);
-    mLogListCtrl->InsertColumn(3, wxT("Message"), wxLIST_FORMAT_LEFT, 400);
+    for (unsigned int i=0; i<LOG_HDRNUM; ++i)
+    {
+        mLogListCtrl->InsertColumn(i, _LogHeaders[i].Label, wxLIST_FORMAT_LEFT, colWidth[i]);
+    }
 }
 
 void DlvChannelPage::resetRegisterContent()
 {
+    // Save column width settings, use default value for initial reset ( width = 0 )
+    int colWidth[REG_HDRNUM] = {0};
+    for (unsigned int i=0; i<REG_HDRNUM; ++i)
+    {
+        colWidth[i] = mRegListCtrl->GetColumnWidth(i);
+        if (0 == colWidth[i])
+            colWidth[i] = _RegHeaders[i].Width;
+    }
+
     mRegListCtrl->ClearAll();
     mRegisterData.clear();
 
     // setup column headers
-    mRegListCtrl->InsertColumn(0, wxT("Name"), wxLIST_FORMAT_LEFT, 50);
-    mRegListCtrl->InsertColumn(1, wxT("Content"), wxLIST_FORMAT_LEFT, 100);
+    for (unsigned int i=0; i<REG_HDRNUM; ++i)
+    {
+        mRegListCtrl->InsertColumn(i, _RegHeaders[i].Label, wxLIST_FORMAT_LEFT, colWidth[i]);
+    }
 }
 
 void DlvChannelPage::OnPriorityFilterChanged(wxCommandEvent& ev)
@@ -242,9 +309,9 @@ void DlvChannelPage::renderLog(DlvEvtDataLog *logdata)
     dateStr.Printf(wxT("%02d-%02d %02d:%02d:%02d.%03u"), date.GetMonth(), date.GetDay(),
         date.GetHour(), date.GetMinute(), date.GetSecond(), logdata->TimestampMs);
     mLogListCtrl->InsertItem(pos, dateStr);
-    mLogListCtrl->SetItem(pos, 1, priorityLabels[logdata->Priority]);
-    mLogListCtrl->SetItem(pos, 2, logdata->Tag);
-    mLogListCtrl->SetItem(pos, 3, logdata->Message);
+    mLogListCtrl->SetItem(pos, LOG_HDRIDX_PRI, priorityLabels[logdata->Priority]);
+    mLogListCtrl->SetItem(pos, LOG_HDRIDX_TAG, logdata->Tag);
+    mLogListCtrl->SetItem(pos, LOG_HDRIDX_MSG, logdata->Message);
     mLogListCtrl->SetItemTextColour(pos, textColors[logdata->Priority]);
 
     // TODO: scroll to the bottom *conditionally*

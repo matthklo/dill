@@ -31,6 +31,23 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
+
+unsigned int tokenize(const std::string& line, std::vector<std::string> & out)
+{
+    char _buf[4096] = {0};
+
+    line.copy(_buf, 4095);
+    char *p = std::strtok(_buf, " \t");
+
+    out.clear();
+    while(p)
+    {
+        out.push_back(p);
+        p = std::strtok(0, " \t");
+    }
+    return out.size();
+}
 
 int main(int argc, char *argv[])
 {
@@ -46,18 +63,28 @@ int main(int argc, char *argv[])
     }
 
     std::string line;
+    std::vector<std::string> params;
     while (true)
     {
         std::getline(std::cin, line);
+        unsigned int pnum = tokenize(line, params);
 
-        if (line == "quit")
+        if (params[0] == "quit")
         {
             break;
-        } else if (line.substr(0, 4) == "tag ") {
-            tag.clear();
-            tag.append(line.c_str() + 4);
+        } else if ((params[0] == "tag") && (pnum > 1)) {
+            tag = params[1];
+            std::cout << " ==> Default tag changed to: " << tag << std::endl;
+        } else if ((params[0] == "reg") && (pnum > 2)) {
+            dill::regStr(params[1].c_str(), params[2].c_str());
+        } else if ((params[0] == "regi") && (pnum > 1)) {
+            dill::regInt(params[1].c_str(), rand());
+        } else if ((params[0] == "regf") && (pnum > 1)) {
+            dill::regReal(params[1].c_str(), ((double)(rand()%1024))/((double)19));
+        } else if (pnum > 1) {
+            dill::logPrintln((unsigned char)(std::rand()%5), params[0].c_str(), params[1].c_str());
         } else {
-            dill::logPrintln((unsigned char)(std::rand()%5), tag.c_str(), line.c_str());
+            dill::logPrintln((unsigned char)(std::rand()%5), tag.c_str(), params[0].c_str());
         }
     }
 

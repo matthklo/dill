@@ -51,6 +51,12 @@
 #define DLVSTR_PRIORITY_ERROR          wxT("Error")
 #define DLVSTR_CHPAGE_PRIORITY_LABEL   wxT("Priority:")
 #define DLVSTR_CHPAGE_FILTER_LABEL     wxT("Filter:")
+#define DLVSTR_LOGHDR_DATE             wxT("Date")
+#define DLVSTR_LOGHDR_PRIORITY         wxT("PRI")
+#define DLVSTR_LOGHDR_TAG              wxT("Tag")
+#define DLVSTR_LOGHDR_MESSAGE          wxT("Message")
+#define DLVSTR_REGHDR_NAME             wxT("Name")
+#define DLVSTR_REGHDR_CONTENT          wxT("Content")
 
 enum
 {
