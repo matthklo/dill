@@ -82,7 +82,7 @@ void DlvFrame::setupMenuBar()
 void DlvFrame::setupStatusBar()
 {
     // Create a status bar for showing connection information
-    CreateStatusBar();
+    CreateStatusBar(2);
 }
 
 void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
@@ -93,8 +93,7 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
         wxString statMsg;
         statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerAddr,
                        data->ServerPort, data->ChannelNum);
-        SetStatusText(statMsg);
-        delete data;
+        SetStatusText(statMsg, 1);
 
         if (mWaitingFirstChannel && (data->ChannelNum > 0))
         {
@@ -104,6 +103,8 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
             wxGetApp().subscribeChannel(0, (void*)page);
             mWaitingFirstChannel = false;
         }
+
+        delete data;
     }
 }
 

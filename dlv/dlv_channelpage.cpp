@@ -29,7 +29,7 @@
 #include "dlv_channelpage.h"
 
 BEGIN_EVENT_TABLE(DlvChannelPage, wxPanel)
-
+    EVT_BUTTON(DLVID_SHOWREGBTN, DlvChannelPage::OnShowRegViewButtonClicked)
 END_EVENT_TABLE()
 
 DlvChannelPage::DlvChannelPage(wxWindow *parent)
@@ -43,11 +43,11 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
 {
     // Load icons
     wxImage::AddHandler(new wxPNGHandler);
-    mFilterAddImage    = new wxImage(wxT("resource/add-icon.png"), wxBITMAP_TYPE_PNG);
-    mFilterEditImage   = new wxImage(wxT("resource/edit-icon.png"), wxBITMAP_TYPE_PNG);
-    mFilterDeleteImage = new wxImage(wxT("resource/remove-icon.png"), wxBITMAP_TYPE_PNG);
-    mClearLogImage     = new wxImage(wxT("resource/clear-icon.png"), wxBITMAP_TYPE_PNG);
-    mShowRegViewImage  = new wxImage(wxT("resource/logreg-icon.png"), wxBITMAP_TYPE_PNG);
+    mFilterAddImage    = new wxImage(wxT("resource/add-icon.png"),     wxBITMAP_TYPE_PNG);
+    mFilterEditImage   = new wxImage(wxT("resource/edit-icon.png"),    wxBITMAP_TYPE_PNG);
+    mFilterDeleteImage = new wxImage(wxT("resource/remove-icon.png"),  wxBITMAP_TYPE_PNG);
+    mClearLogImage     = new wxImage(wxT("resource/clear-icon.png"),   wxBITMAP_TYPE_PNG);
+    mShowRegViewImage  = new wxImage(wxT("resource/logreg-icon.png"),  wxBITMAP_TYPE_PNG);
     mHideRegViewImage  = new wxImage(wxT("resource/logonly-icon.png"), wxBITMAP_TYPE_PNG);
 
     // Initiate all components
@@ -107,8 +107,8 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     mLogVBoxSizer->AddSpacer(5);
 
     mContentHBoxSizer->Add(mLogVBoxSizer, 4, wxEXPAND);
-    mContentHBoxSizer->AddSpacer(5);
-    mContentHBoxSizer->Add(mRegListCtrl, 1, wxEXPAND);
+    mContentHBoxSizer->Add(mRegListCtrl, 1, wxLEFT | wxEXPAND, 5);
+    mRegListCtrl->Show(false);
 
     mMainVBoxSizer->AddSpacer(5);
     mMainVBoxSizer->Add(mButtonHBoxSizer, 0, wxEXPAND);
@@ -134,4 +134,17 @@ void DlvChannelPage::OnAppenLog(DlvEvtDataLog *logdata)
 
 void DlvChannelPage::OnUpdateRegister(DlvEvtDataRegister *regdata)
 {
+}
+
+void DlvChannelPage::OnShowRegViewButtonClicked(wxCommandEvent& ev)
+{
+    if (mRegListCtrl->IsShown())
+    {
+        mRegListCtrl->Show(false);
+        mShowRegViewButton->SetBitmapLabel(wxBitmap(*mShowRegViewImage));
+    } else {
+        mRegListCtrl->Show(true);
+        mShowRegViewButton->SetBitmapLabel(wxBitmap(*mHideRegViewImage));
+    }
+    mContentHBoxSizer->Layout();
 }

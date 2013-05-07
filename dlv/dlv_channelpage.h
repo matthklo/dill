@@ -41,6 +41,8 @@ public:
     void OnAppenLog(DlvEvtDataLog *logdata);
     void OnUpdateRegister(DlvEvtDataRegister *regdata);
 
+    void OnShowRegViewButtonClicked(wxCommandEvent& ev); 
+
 private:
     DECLARE_EVENT_TABLE()
 

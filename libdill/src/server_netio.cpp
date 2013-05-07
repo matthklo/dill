@@ -51,12 +51,11 @@ void DillServerNetIoCallable::onAcceptFinished(const boost::system::error_code& 
         w->asyncReadParcel();
 
         callback(DILL_PRIORITY_CONNECTED, (unsigned int)w, 0, 0, 0, 0);
-
-        asyncAccept();
     }
 
     // For both case, a new socket object is needed for upcoming connection.
     _client_socket = new boost::asio::ip::tcp::socket(*_iosvc);
+    asyncAccept();
 }
 
 DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize, unsigned int channels)
