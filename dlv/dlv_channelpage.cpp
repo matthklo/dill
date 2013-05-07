@@ -231,7 +231,7 @@ void DlvChannelPage::renderLog(DlvEvtDataLog *logdata)
     static wxColour textColors[] = { colorDB.Find(wxT("BLACK")), 
                                      colorDB.Find(wxT("BLUE")), 
                                      colorDB.Find(wxT("FOREST GREEN")), 
-                                     colorDB.Find(wxT("ORANGE")),
+                                     colorDB.Find(wxT("GOLD")),
                                      colorDB.Find(wxT("RED")) };
     static wxString priorityLabels[] = { wxT("V"), wxT("D"), wxT("I"), wxT("W"), wxT("E") };
 

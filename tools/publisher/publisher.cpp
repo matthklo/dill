@@ -29,10 +29,14 @@
 #include <dill_log.h>
 #include <iostream>
 #include <string>
+#include <cstdlib>
+#include <ctime>
 
 int main(int argc, char *argv[])
 {
     std::string tag = "test";
+
+    std::srand((unsigned int)std::time(0));
 
     if (argc > 1)
     {
@@ -53,7 +57,7 @@ int main(int argc, char *argv[])
             tag.clear();
             tag.append(line.c_str() + 4);
         } else {
-            dill::logi(tag.c_str(), line.c_str());
+            dill::logPrintln((unsigned char)(std::rand()%5), tag.c_str(), line.c_str());
         }
     }
 
