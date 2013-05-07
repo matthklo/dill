@@ -1,0 +1,12 @@
+build/
+CMakeFiles/
+Debug/
+dlv/
+libdill/
+tools/
+Win32/
+ALL_BUILD.*
+cmake_install.cmake
+CMakeCache.txt
+dillproj.*
+ZERO_CHECK.*
