@@ -9,6 +9,6 @@ ADD_EXECUTABLE(dill_server
   server.cpp
 )
 TARGET_LINK_LIBRARIES(dill_server dill)
-SET_PROPERTY(TARGET dill_server PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../build/bin)
+SET_PROPERTY(TARGET dill_server PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../bin)
 
 

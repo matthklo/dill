@@ -9,5 +9,5 @@ ADD_EXECUTABLE(dill_subscriber
   subscriber.cpp
 )
 TARGET_LINK_LIBRARIES(dill_subscriber dill)
-SET_PROPERTY(TARGET dill_subscriber PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../build/bin)
+SET_PROPERTY(TARGET dill_subscriber PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../bin)
 

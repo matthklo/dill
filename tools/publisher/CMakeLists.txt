@@ -9,6 +9,6 @@ ADD_EXECUTABLE(dill_publisher
   publisher.cpp
 )
 TARGET_LINK_LIBRARIES(dill_publisher dill)
-SET_PROPERTY(TARGET dill_publisher PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../build/bin)
+SET_PROPERTY(TARGET dill_publisher PROPERTY RUNTIME_OUTPUT_DIRECTORY ../../bin)
 
 
