@@ -1,7 +1,7 @@
 Windows:
   1. Get wxMSW-2.8.12.zip
   2. Extract
-  3. cd wxMSW-2.8.12\build\msw; nmake -f makefile.vc BUILD=release SHARED=0 UNICODE=1 USE_GUI=1 RUNTIME_LIBS=static; nmake -f makefile.vc BUILD=debug SHARED=0 UNICODE=1 USE_GUI=1 RUNTIME_LIBS=static
+  3. cd wxMSW-2.8.12\build\msw; nmake -f makefile.vc BUILD=release SHARED=0 UNICODE=1 USE_GUI=1; nmake -f makefile.vc BUILD=debug SHARED=0 UNICODE=1 USE_GUI=1
   4. required windows library:
         comctl32.lib rpcrt4.lib shell32.lib gdi32.lib kernel32.lib
         user32.lib comdlg32.lib ole32.lib oleaut32.lib advapi32.lib
