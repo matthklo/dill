@@ -1,7 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT(dill_server)
-
 INCLUDE_DIRECTORIES("../../dep/boost_1_53_0")
 INCLUDE_DIRECTORIES("../../libdill/inc")
 

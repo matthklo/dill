@@ -1,7 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT(dill)
-
 # For cmake to find Boost installed at custom path
 IF(WIN32)
 SET(Boost_ROOT_DIR "../dep/boost_1_53_0")

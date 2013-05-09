@@ -1,7 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-PROJECT(dlv)
-
 # For cmake to find wxWidgets installed at custom path
 IF(WIN32)
 SET(wxWidgets_ROOT_DIR "../dep/wxMSW-2.8.12")
