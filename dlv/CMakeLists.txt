@@ -24,3 +24,8 @@ ADD_EXECUTABLE(dlv WIN32
 )
 SET_PROPERTY(TARGET dlv PROPERTY RUNTIME_OUTPUT_DIRECTORY ../bin)
 TARGET_LINK_LIBRARIES(dlv dill ${wxWidgets_LIBRARIES})
+
+ADD_CUSTOM_COMMAND(TARGET dlv POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ../bin/${CMAKE_BUILD_TYPE}/resource
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resource ../bin/${CMAKE_BUILD_TYPE}/resource
+    COMMENT "Copying dlv resources ...")
