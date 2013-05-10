@@ -1,7 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-# For cmake to find built-in wxWidgets
+## For cmake to find built-in wxWidgets
+IF(WIN32)
 SET(wxWidgets_ROOT_DIR ${DILL_BUILTIN_WXWIDGETS_DIRECTORY})
+ELSE(WIN32)
+SET(CMAKE_PREFIX_PATH ${DILL_BUILTIN_WXWIDGETS_DIRECTORY})
+ENDIF(WIN32)
 
 FIND_PACKAGE(wxWidgets COMPONENTS core base REQUIRED)
 # This setup wxWidgets headers & libs dependencies.

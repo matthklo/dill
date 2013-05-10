@@ -33,7 +33,7 @@
 #if defined(_MSC_VER)
 #  define DILLEXPORT __declspec(dllexport)
 #  define DILLIMPORT __declspec(dllimport)
-#elif defined(_GNUC_)
+#elif defined(__GNUC__)
 #  define DILLEXPORT __attribute__ ((visibility("default")))
 #  define DILLIMPORT
 #endif
@@ -115,5 +115,6 @@ typedef void (*DILL_SUBSCRIBE_CBFN)(struct DillEvent *);
 #pragma warning ( disable : 4819 4996)
 #endif
 
+#define DILL_PTRVAL(x) (unsigned int)(unsigned long long)(x)
 
 #endif

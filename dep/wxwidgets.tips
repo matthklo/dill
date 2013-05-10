@@ -1,8 +1,13 @@
 Windows:
-  1. Get wxMSW-2.8.12.zip
-  2. Extract
-  3. cd wxMSW-2.8.12\build\msw; nmake -f makefile.vc BUILD=release SHARED=0 UNICODE=1 USE_GUI=1; nmake -f makefile.vc BUILD=debug SHARED=0 UNICODE=1 USE_GUI=1
-  4. required windows library:
+  1. Get wxMSW-2.8.12.zip & extract
+  2. cd wxMSW-2.8.12\build\msw; nmake -f makefile.vc BUILD=release SHARED=0 UNICODE=1 USE_GUI=1; nmake -f makefile.vc BUILD=debug SHARED=0 UNICODE=1 USE_GUI=1
+  3. required windows library:
         comctl32.lib rpcrt4.lib shell32.lib gdi32.lib kernel32.lib
         user32.lib comdlg32.lib ole32.lib oleaut32.lib advapi32.lib
-  
+
+Linux (Ubuntu):
+  1. Get wxGTK-2.8.12.tar.gz & extract
+  2. Make sure you have installed gtk2 package:
+         sudo apt-get install libgtk2.0-dev
+  3. cd wxGTK-2.8.12; ./configure --disable-shared --enable-unicode; make
+

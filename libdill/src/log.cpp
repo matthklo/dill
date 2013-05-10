@@ -33,6 +33,7 @@
 #include <boost/date_time/gregorian/greg_date.hpp>
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <cstring>
 #include <string>
@@ -48,7 +49,7 @@ class DillLogAgentCallable : public DillClientNetIoCallable
     boost::mutex                 *_data_mtx;
 
     // members protected by _data_mtx
-    std::deque< std::shared_ptr<DillParcel> > 
+    std::deque< boost::shared_ptr<DillParcel> > 
                                   _queue;
     bool                          _pending_logwrites;
     // --
@@ -87,7 +88,7 @@ public:
         static boost::posix_time::ptime epochtime(boost::gregorian::date(1970,1,1)); 
         boost::posix_time::time_duration td = curtime - epochtime;
 
-        std::shared_ptr<DillParcel> parcel(new DillParcel);
+        boost::shared_ptr<DillParcel> parcel(new DillParcel);
         parcel->op = pri;
         parcel->id = _channel_id;
         parcel->timestamp1 = (unsigned int) td.total_seconds();
@@ -182,7 +183,7 @@ protected:
 
 //======------ Global Sigletons ------======//
 
-std::shared_ptr<DillLogAgentCallable> _g_agent;
+boost::shared_ptr<DillLogAgentCallable> _g_agent;
 
 //======------ C Funcs ------======//
 

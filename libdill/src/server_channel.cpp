@@ -27,7 +27,7 @@
  */
 
 #include <dill_afx.h>
-
+#include <boost/shared_ptr.hpp>
 #include "server_channel.h"
 #include "server_conn.h"
 
@@ -103,7 +103,7 @@ void DillServerChannel::attachSubscriber(DillServerConnection *conn)
         conn->asyncWriteParcel(*it);
     }
 
-    std::shared_ptr<DillParcel> p(new DillParcel);
+    boost::shared_ptr<DillParcel> p(new DillParcel);
     p->op = DILL_PRIORITY_REGISTER;
     p->id = ID;
     p->timestamp1 = 0;

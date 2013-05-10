@@ -32,6 +32,7 @@
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <string>
 
@@ -228,7 +229,7 @@ protected:
     }
 };
 
-std::shared_ptr<DillSubscriberCallable> _g_subscriber;
+boost::shared_ptr<DillSubscriberCallable> _g_subscriber;
 
 unsigned int dill_subscribe_init()
 {

@@ -29,11 +29,11 @@
 #include <dill_server.h>
 
 #include <boost/lexical_cast.hpp>
-#include <memory>
+#include <boost/shared_ptr.hpp>
 
 #include "server_netio.h"
 
-std::shared_ptr<DillServerNetIoCallable> _g_server;
+boost::shared_ptr<DillServerNetIoCallable> _g_server;
 
 unsigned int dill_server_init(int port, unsigned int bufSize, unsigned int channels)
 {

@@ -29,9 +29,11 @@
 #include <dill_afx.h>
 
 #include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
 #include "server_conn.h"
 #include "server_netio.h"
 #include "server_channel.h"
+
 
 void DillServerConnection::asyncReadParcel()
 {
@@ -66,7 +68,7 @@ void DillServerConnection::onReadParcelContentFinished(const boost::system::erro
 {
     if ((error == boost::system::errc::success) && (bytes_transferred == _expecting_size))
     {
-        std::shared_ptr<DillParcel> p(new DillParcel);
+        boost::shared_ptr<DillParcel> p(new DillParcel);
         p->inflate(_rdbuf);
 
         switch (_mode)
@@ -124,7 +126,7 @@ void DillServerConnection::onPublisherParcel(DillParcel *p)
             p->str2.clear();
             asyncWriteParcel(p);
 
-            _server->callback(DILL_PRIORITY_PUBLISH, (unsigned int)this, 0, 0, _chname.c_str(), 0);
+            _server->callback(DILL_PRIORITY_PUBLISH, DILL_PTRVAL(this), 0, 0, _chname.c_str(), 0);
         }
         break;
     default:
@@ -149,7 +151,7 @@ void DillServerConnection::onSubscribeParcel(DillParcel *p)
             if (data)
             {
                 data->attachSubscriber(this);
-                _server->callback(DILL_PRIORITY_SUBSCRIBE, (unsigned int)this, 0, 0, data->Name.c_str(), 0);
+                _server->callback(DILL_PRIORITY_SUBSCRIBE, DILL_PTRVAL(this), 0, 0, data->Name.c_str(), 0);
             }
         }
         break;
@@ -159,7 +161,7 @@ void DillServerConnection::onSubscribeParcel(DillParcel *p)
             if (data)
             {
                 data->dettachSubscriber(this);
-                _server->callback(DILL_PRIORITY_UNSUBSCRIBE, (unsigned int)this, 0, 0, data->Name.c_str(), 0);
+                _server->callback(DILL_PRIORITY_UNSUBSCRIBE, DILL_PTRVAL(this), 0, 0, data->Name.c_str(), 0);
             }
         }
         break;

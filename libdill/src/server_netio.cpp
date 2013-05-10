@@ -50,7 +50,7 @@ void DillServerNetIoCallable::onAcceptFinished(const boost::system::error_code& 
         _conn_set.insert(w);
         w->asyncReadParcel();
 
-        callback(DILL_PRIORITY_CONNECTED, (unsigned int)w, 0, 0, 0, 0);
+        callback(DILL_PRIORITY_CONNECTED, DILL_PTRVAL(w), 0, 0, 0, 0);
     }
 
     // For both case, a new socket object is needed for upcoming connection.
@@ -216,7 +216,7 @@ void DillServerNetIoCallable::disconnect(DillServerConnection *conn)
 
     _conn_set.erase(conn);
 
-    callback(DILL_PRIORITY_DISCONNECTED, (unsigned int)conn, ((conn->isPublisher())?1:0), 0, conn->getChannelName(), 0);
+    callback(DILL_PRIORITY_DISCONNECTED, DILL_PTRVAL(conn), ((conn->isPublisher())?1:0), 0, conn->getChannelName(), 0);
     delete conn;
 }
 
