@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+IF(WIN32)
 ## For cmake to find built-in Boost
 #  To locate headers
 SET(BOOST_ROOT ${DILL_BUILTIN_BOOST_DIRECTORY})
@@ -8,6 +9,7 @@ SET(BOOST_LIBRARYDIR ${DILL_BUILTIN_BOOST_LIB_DIRECTORY})
 #  To specify which variant of boost libraries should we use
 SET(Boost_USE_STATIC_LIBS        ON)
 SET(Boost_USE_MULTITHREADED      ON)
+ENDIF(WIN32)
 
 FIND_PACKAGE(Boost COMPONENTS system thread date_time regex chrono REQUIRED)
 

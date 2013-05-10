@@ -91,7 +91,7 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
     if (data)
     {
         wxString statMsg;
-        statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerAddr,
+        statMsg.Printf(DLVSTR_STATMSG_FORMAT, data->ServerAddr.c_str(),
                        data->ServerPort, data->ChannelNum);
         SetStatusText(statMsg, 1);
 

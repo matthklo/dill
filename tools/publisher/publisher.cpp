@@ -29,6 +29,7 @@
 #include <dill_log.h>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <cstdlib>
 #include <ctime>
 #include <vector>

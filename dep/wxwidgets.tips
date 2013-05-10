@@ -6,8 +6,4 @@ Windows:
         user32.lib comdlg32.lib ole32.lib oleaut32.lib advapi32.lib
 
 Linux (Ubuntu):
-  1. Get wxGTK-2.8.12.tar.gz & extract
-  2. Make sure you have installed gtk2 package:
-         sudo apt-get install libgtk2.0-dev
-  3. cd wxGTK-2.8.12; ./configure --disable-shared --enable-unicode; make
-
+  1. sudo apt-get install libwxgtk2.8-dev

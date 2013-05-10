@@ -2,8 +2,6 @@ Windows:
  1. Get boost 1.53.0 source tarball & extract
  2. cd boost_1_53_0; bootstrap; b2 toolset=msvc-10.0 link=static runtime-link=shared
 
-Unix:
- 1. Get boost 1.53.0 source tarball & extract
- 2. cd boost_1_53_0; ./bootstrap.sh ; ./b2 link=static runtime-link=shared variant=release
-
+Ubuntu:
+ 1. sudo apt-get install libboost1.48-all-dev 
 

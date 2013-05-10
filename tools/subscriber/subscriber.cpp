@@ -31,6 +31,7 @@
 #include <iomanip>
 #include <string>
 #include <cstring>
+#include <cstdio>
 #include <ctime>
 
 void subscriberEventCallback(struct DillEvent *ev)
