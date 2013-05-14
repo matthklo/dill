@@ -5,3 +5,7 @@ Windows:
 Ubuntu:
  1. sudo apt-get install libboost1.48-all-dev 
 
+MacOS X:
+ 1. Get boost_1_53_0.tar.bz2 & extract
+ 2. cd boost_1_53_0; ./bootstrap.sh; ./b2 architecture=x86 toolset=darwin threading=multi address-model=32
+

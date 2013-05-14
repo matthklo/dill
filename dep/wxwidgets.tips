@@ -7,3 +7,9 @@ Windows:
 
 Linux (Ubuntu):
   1. sudo apt-get install libwxgtk2.8-dev
+
+MacOS X:
+  0. Make sure the latest xcode and its command line toolkit has been installed
+  1. get wxWidgets-2.9.4.tar.bz2 & extract (do NOT use wxMac-2.8.12 since it is no longer buildable with xcode4)
+  2. cd wxWidgets-2.9.4; ./configure --enable-unicode --with-osx_cocoa --enable-macosx_arch=i386; make
+

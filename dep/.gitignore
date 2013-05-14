@@ -1,4 +1,7 @@
 *.zip
+*.tar.bz2
+*.tar.gz
+*.tgz
 boost_1_53_0/
 wxMSW-2.8.12/
-
+wxWidgets-2.9.4/
