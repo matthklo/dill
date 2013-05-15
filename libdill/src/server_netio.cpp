@@ -71,6 +71,10 @@ DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize,
     , _iowork(0)
     , _id(0)
     , _thread(0)
+    , _acceptor(0)
+    , _client_socket(0)
+    , _server_socket(0)
+    , _iosvc(0)
 {
     _iosvc         = new boost::asio::io_service;
     _server_socket = new boost::asio::ip::tcp::socket(*_iosvc);
@@ -93,8 +97,11 @@ DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize,
 DillServerNetIoCallable::~DillServerNetIoCallable()
 {
     _sig_exit = true;
-    delete _iowork;
-    _iosvc->stop();
+    if (_iosvc)
+    {
+        delete _iowork;
+        _iosvc->stop();
+    }
 
     TRACED("     DillServerNetIoCallable::~DillServerNetIoCallable(): shutdowning server...");
 
@@ -107,16 +114,32 @@ DillServerNetIoCallable::~DillServerNetIoCallable()
 
     TRACED("     DillServerNetIoCallable::~DillServerNetIoCallable(): thread joined.");
 
-    _client_socket->close();
-    delete _client_socket;
+    if (_client_socket)
+    {
+        _client_socket->close();
+        delete _client_socket;
+        _client_socket = 0;
+    }
 
-    _acceptor->close();
-    delete _acceptor;
+    if (_acceptor)
+    {
+        _acceptor->close();
+        delete _acceptor;
+        _acceptor = 0;
+    }
 
-    _server_socket->close();
-    delete _server_socket;
+    if (_server_socket)
+    {
+        _server_socket->close();
+        delete _server_socket;
+        _server_socket = 0;
+    }
 
-    delete _iosvc;
+    if (_iosvc)
+    {
+        delete _iosvc;
+        _iosvc = 0;
+    }
 }
 
 unsigned int DillServerNetIoCallable::getStatus() const
