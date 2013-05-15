@@ -30,6 +30,8 @@
 
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
+
+#include "trace.h"
 #include "server_conn.h"
 #include "server_netio.h"
 #include "server_channel.h"
@@ -92,6 +94,7 @@ void DillServerConnection::onReadParcelContentFinished(const boost::system::erro
 
 void DillServerConnection::onPublisherParcel(DillParcel *p)
 {
+    TRACED("<=== DillServerConnection::onPublisherParcel(): op/pri = %u", p->op);
     switch (p->op)
     {
     case DILL_PRIORITY_VERBOSE:
@@ -136,6 +139,7 @@ void DillServerConnection::onPublisherParcel(DillParcel *p)
 
 void DillServerConnection::onSubscribeParcel(DillParcel *p)
 {
+    TRACED("<=== DillServerConnection::onSubscribeParcel(): op = %u", p->op);
     switch (p->op)
     {
     case DILL_PRIORITY_AVAILCH:
@@ -152,6 +156,9 @@ void DillServerConnection::onSubscribeParcel(DillParcel *p)
             {
                 data->attachSubscriber(this);
                 _server->callback(DILL_PRIORITY_SUBSCRIBE, DILL_PTRVAL(this), 0, 0, data->Name.c_str(), 0);
+            } else {
+                TRACEW("!!!! DillServerConnection::onSubscribeParcel(): subscriber (0x%08x) subscribes for an unknown chidx: %u",
+                    DILL_PTRVAL(this), p->id);
             }
         }
         break;
@@ -160,8 +167,11 @@ void DillServerConnection::onSubscribeParcel(DillParcel *p)
             DillServerChannel *data = _server->getChannelData(p->id);
             if (data)
             {
-                data->dettachSubscriber(this);
+                data->detachSubscriber(this);
                 _server->callback(DILL_PRIORITY_UNSUBSCRIBE, DILL_PTRVAL(this), 0, 0, data->Name.c_str(), 0);
+            } else {
+                TRACEW("!!!! DillServerConnection::onSubscribeParcel(): subscriber (0x%08x) unsubscribes for an unknown chidx: %u",
+                    DILL_PTRVAL(this), p->id);
             }
         }
         break;
@@ -200,7 +210,10 @@ void DillServerConnection::onWriteParcelFinished(const boost::system::error_code
 {
     if (error != boost::system::errc::success)
     {
+        TRACEW("!!!! DillServerConnection::onWriteParcelFinished(): schedule disconnect (0x%08x) due to write error.", DILL_PTRVAL(this));
         _server->scheduleDisconnect(this);
+    } else {
+        TRACED("===> DillServerConnection::onWriteParcelFinished(): parcel sent to client (0x%08x)", DILL_PTRVAL(this));
     }
 }
 

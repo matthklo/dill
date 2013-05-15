@@ -25,34 +25,25 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
+ 
+#include "trace.h"
 
-#pragma once
+#include <cstdarg>
+#include <cstring>
+#include <cstdio>
 
-#include <boost/unordered_map.hpp>
-#include <deque>
-#include <set>
+static char *_g_prilabel[] = {"[V] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
-#include <dill_afx.h>
-
-#include "protocol.h"
-
-class  DillServerConnection;
-struct DillParcel;
-
-struct DillServerChannel
+void _trace( unsigned char pri, const char *fmt, ... )
 {
-    unsigned int                                   ID;
-    const std::string                              Name;
-    std::set<DillServerConnection*>                Subscribers;
-    std::deque<DillParcel*>                        Buffers;
-    const unsigned int                             Capacity;
-    unsigned int                                   Used;
-    boost::unordered_map<std::string, std::string> Registers;
+    char buf[2048];
 
-    DillServerChannel(unsigned int id, unsigned int capacity, const char *name);
-    ~DillServerChannel();
+    std::memcpy(buf, _g_prilabel[pri], 4);
 
-    void updateChannel(DillParcel *p);
-    void attachSubscriber(DillServerConnection *conn);
-    void detachSubscriber(DillServerConnection *conn);
-};
+    std::va_list v;
+    va_start(v, fmt);
+    std::vsprintf(&buf[4], fmt, v);
+    va_end(v);
+
+    std::printf("%s\n", buf);
+}

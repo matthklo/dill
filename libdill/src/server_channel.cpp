@@ -28,6 +28,8 @@
 
 #include <dill_afx.h>
 #include <boost/shared_ptr.hpp>
+
+#include "trace.h"
 #include "server_channel.h"
 #include "server_conn.h"
 
@@ -62,6 +64,7 @@ void DillServerChannel::updateChannel(DillParcel *p)
         DillParcel *archive = new DillParcel(*p); // clone parcel
         bool capable = false;
         const unsigned int psize = archive->deflate(0);
+        unsigned int purgedSize = 0;
 
         while ((Used + psize > Capacity) && (!Buffers.empty()))
         {
@@ -70,6 +73,7 @@ void DillServerChannel::updateChannel(DillParcel *p)
             Used -= oldpsize;
             delete oldp;
             Buffers.pop_front();
+            purgedSize += oldpsize;
         }
 
         capable = (Used + psize <= Capacity);
@@ -79,12 +83,19 @@ void DillServerChannel::updateChannel(DillParcel *p)
             Buffers.push_back(archive);
             Used += psize;
 
+            TRACED("     DillServerChannel::updateChannel(): channel [%s] take: %u bytes, purge: %u bytes, total: %u bytes",
+                Name.c_str(), psize, purgedSize, Used);
+
             broadcast = (!Subscribers.empty());
+        } else {
+            TRACEE("!!!! DillServerChannel::updateChannel(): channel buffer can not hold a single log !");
         }
     }
 
     if (broadcast)
     {
+        TRACED("     DillServerChannel::updateChannel(): channel [%s] brodcasting update to %u subscribers",
+            Name.c_str(), Subscribers.size());
         for (std::set<DillServerConnection*>::iterator it = Subscribers.begin();
             it != Subscribers.end(); it++)
         {
@@ -95,6 +106,9 @@ void DillServerChannel::updateChannel(DillParcel *p)
 
 void DillServerChannel::attachSubscriber(DillServerConnection *conn)
 {
+    TRACEI("     DillServerChannel::attachSubscriber(): subscriber (0x%08x) attached. sending %u logs, %u regctx.", 
+        DILL_PTRVAL(conn), Buffers.size(), Registers.size());
+
     Subscribers.insert(conn);
 
     for (std::deque<DillParcel*>::iterator it = Buffers.begin();
@@ -117,8 +131,9 @@ void DillServerChannel::attachSubscriber(DillServerConnection *conn)
     }
 }
 
-void DillServerChannel::dettachSubscriber(DillServerConnection *conn)
+void DillServerChannel::detachSubscriber(DillServerConnection *conn)
 {
+    TRACEI("     DillServerChannel::detachSubscriber(): subscriber (0x%08x) detached.", DILL_PTRVAL(conn));
     Subscribers.erase(conn);
 }
 

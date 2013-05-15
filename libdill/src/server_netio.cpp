@@ -28,6 +28,7 @@
 
 #include <dill_afx.h>
 
+#include "trace.h"
 #include "server_netio.h"
 #include "server_conn.h"
 #include "server_channel.h"
@@ -43,6 +44,7 @@ void DillServerNetIoCallable::onAcceptFinished(const boost::system::error_code& 
 {
     if (error != boost::system::errc::success)
     {
+        TRACEW("!!!! DillServerNetIoCallable::onAcceptFinished(): fail on accepting.");
         _client_socket->close();
         delete _client_socket;
     } else {
@@ -50,6 +52,7 @@ void DillServerNetIoCallable::onAcceptFinished(const boost::system::error_code& 
         _conn_set.insert(w);
         w->asyncReadParcel();
 
+        TRACEI("<=== DillServerNetIoCallable::onAcceptFinished(): accepted a client connection (0x%08x).", DILL_PTRVAL(w));
         callback(DILL_PRIORITY_CONNECTED, DILL_PTRVAL(w), 0, 0, 0, 0);
     }
 
@@ -80,6 +83,7 @@ DillServerNetIoCallable::DillServerNetIoCallable(int port, unsigned int bufSize,
                             boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(),
                             _port), false); // Do not reuse addr, i.e. throw error when bind error.
     } catch (boost::system::system_error err) {
+        TRACEW("!!!! DillServerNetIoCallable::DillServerNetIoCallable(): fail on binding.");
         _status       = DILL_EC_BIND;
     }
 
@@ -92,12 +96,16 @@ DillServerNetIoCallable::~DillServerNetIoCallable()
     delete _iowork;
     _iosvc->stop();
 
+    TRACED("     DillServerNetIoCallable::~DillServerNetIoCallable(): shutdowning server...");
+
     if (_thread)
     {
         _thread->join();
         delete _thread;
         _thread = 0;
     }
+
+    TRACED("     DillServerNetIoCallable::~DillServerNetIoCallable(): thread joined.");
 
     _client_socket->close();
     delete _client_socket;
@@ -130,6 +138,7 @@ DillServerChannel* DillServerNetIoCallable::createChannelData(const char *name)
 {
     if (name && (_channel_data.size() < _maxchannels))
     {
+        TRACEI("     DillServerNetIoCallable::createChannelData(): A new channel [%s] created.", name);
         DillServerChannel *data = new DillServerChannel(_channel_data.size(), _bufsize, name);
         _channel_data.push_back(data);
         return data;
@@ -210,12 +219,13 @@ void DillServerNetIoCallable::disconnect(DillServerConnection *conn)
         for (std::vector<DillServerChannel*>::iterator it = _channel_data.begin();
              it != _channel_data.end(); it++)
         {
-            (*it)->dettachSubscriber(conn);
+            (*it)->detachSubscriber(conn);
         }
     }
 
     _conn_set.erase(conn);
 
+    TRACEI("     DillServerNetIoCallable::disconnect(): closed a client connection (0x%08x)", DILL_PTRVAL(conn));
     callback(DILL_PRIORITY_DISCONNECTED, DILL_PTRVAL(conn), ((conn->isPublisher())?1:0), 0, conn->getChannelName(), 0);
     delete conn;
 }

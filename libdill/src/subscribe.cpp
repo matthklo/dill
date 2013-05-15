@@ -36,6 +36,7 @@
 
 #include <string>
 
+#include "trace.h"
 #include "protocol.h"
 #include "client_netio.h"
 
@@ -84,10 +85,12 @@ public:
             p.timestamp1 = 0;
             p.timestamp2 = 0;
 
+            TRACEW("===> DillSubscriberCallable::subscribe(): requesting subscribe channel %u.", chidx);
             asyncWriteParcel(&p);
 
             return DILL_EC_SUCCEED;
         }
+        TRACEW("!!!! DillSubscriberCallable::subscribe(): not connected.");
         return DILL_EC_UNKNOWN;
     }
 
@@ -101,6 +104,7 @@ public:
             p.timestamp1 = 0;
             p.timestamp2 = 0;
 
+            TRACEW("===> DillSubscriberCallable::availableChannels(): requesting available channels.");
             asyncWriteParcel(&p);
 
             {
@@ -110,7 +114,7 @@ public:
             }
             return _availch;
         }
-        
+        TRACEW("!!!! DillSubscriberCallable::availableChannels(): not connected.");
         return 0;
     }
 
@@ -124,6 +128,7 @@ public:
             p.timestamp1 = 0;
             p.timestamp2 = 0;
 
+            TRACEW("===> DillSubscriberCallable::channelName(): requesting channel name for idx: %u.", chidx);
             asyncWriteParcel(&p);
 
             {
@@ -134,6 +139,7 @@ public:
 
             return _chname.c_str();
         }
+        TRACEW("!!!! DillSubscriberCallable::channelName(): not connected.");
         return "";
     }
 
@@ -156,6 +162,7 @@ protected:
 
     void onParcelRead(DillParcel *p)
     {
+        TRACEI("<=== DillSubscriberCallable::onParcelRead(): op/pri = %u", p->op);
         switch(p->op)
         {
         case DILL_PRIORITY_VERBOSE:
@@ -212,7 +219,12 @@ protected:
     void onParcelSent(bool succeed)
     {
         if (!succeed)
+        {
+            TRACEW("===> DillSubscriberCallable::onParcelSent(): fail on parcel sending.");
             onIoError();
+        } else {
+            TRACEI("===> DillSubscriberCallable::onParcelSent(): parcel sent.");
+        }
     }
 
     void onIoError()
@@ -222,9 +234,12 @@ protected:
             _availch = 0;
             _chname = "";
             _rpc_cond->notify_one();
+
+            TRACEW("===> DillSubscriberCallable::onIoError(): i/o error when doing rpc. gives dummy reply.");
         } else {
             boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(3));
         }
+        TRACED("     DillSubscriberCallable::onIoError(): Retry connecting.");
         asyncConnect();
     }
 };

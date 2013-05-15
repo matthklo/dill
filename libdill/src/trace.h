@@ -25,34 +25,23 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
+ 
 #pragma once
-
-#include <boost/unordered_map.hpp>
-#include <deque>
-#include <set>
 
 #include <dill_afx.h>
 
-#include "protocol.h"
+void _trace(unsigned char pri, const char * fmt, ...);
 
-class  DillServerConnection;
-struct DillParcel;
-
-struct DillServerChannel
-{
-    unsigned int                                   ID;
-    const std::string                              Name;
-    std::set<DillServerConnection*>                Subscribers;
-    std::deque<DillParcel*>                        Buffers;
-    const unsigned int                             Capacity;
-    unsigned int                                   Used;
-    boost::unordered_map<std::string, std::string> Registers;
-
-    DillServerChannel(unsigned int id, unsigned int capacity, const char *name);
-    ~DillServerChannel();
-
-    void updateChannel(DillParcel *p);
-    void attachSubscriber(DillServerConnection *conn);
-    void detachSubscriber(DillServerConnection *conn);
-};
+#ifdef _DEBUG
+#define TRACEV(...) _trace(DILL_PRIORITY_VERBOSE, __VA_ARGS__)
+#define TRACED(...) _trace(DILL_PRIORITY_DEBUG, __VA_ARGS__)
+#define TRACEI(...) _trace(DILL_PRIORITY_INFO, __VA_ARGS__)
+#define TRACEW(...) _trace(DILL_PRIORITY_WARN, __VA_ARGS__)
+#define TRACEE(...) _trace(DILL_PRIORITY_ERROR, __VA_ARGS__)
+#else
+#define TRACEV(...)
+#define TRACED(...)
+#define TRACEI(...)
+#define TRACEW(...)
+#define TRACEE(...)
+#endif

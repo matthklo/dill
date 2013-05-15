@@ -42,6 +42,7 @@
 #include <memory>
 
 #include "protocol.h"
+#include "trace.h"
 #include "client_netio.h"
 
 class DillLogAgentCallable : public DillClientNetIoCallable
@@ -79,7 +80,10 @@ public:
     bool post(unsigned char pri, const char * tag, const char * msg)
     {
         if (!_loggable)
+        {
+            TRACEW("!!!! DillLogAgentCallable::post(): message dropped because not loggable.");
             return false;
+        }
 
         unsigned int len1 = std::strlen(tag);
         unsigned int len2 = std::strlen(msg);
@@ -127,8 +131,11 @@ protected:
             req.str1 = _channel;
             asyncWriteParcel(&req);
 
+            TRACEI("===> DillLogAgentCallable::onConnected(): send PUBLISH parcel toward channel [%s].", _channel.c_str());
+
             asyncReadParcel(); // Expecting a reply
         } else {
+            TRACEW("!!!! DillLogAgentCallable::onConnected(): fail on connecting.");
             onIoError();
         }
     }
@@ -139,7 +146,10 @@ protected:
         {
             _loggable = true;
             _channel_id = p->id;
+
+            TRACEI("<=== DillLogAgentCallable::onParcelRead(): got a reply ok.");
         } else {
+            TRACEW("<=== DillLogAgentCallable::onParcelRead(): unexpected server parcel received. (op=%u)", p->op);
             onIoError();
         }
     }
@@ -159,8 +169,14 @@ protected:
                 } else {
                     asyncWriteParcel(_queue.front().get());
                 }
+
+                TRACED("===> DillLogAgentCallable::onParcelSent(): parcel sent. %s",
+                    ((_pending_logwrites)?"(more pendings)":""));
+            } else {
+                TRACED("===> DillLogAgentCallable::onParcelSent(): parcel sent.");
             }
         } else {
+            TRACEW("!!!! DillLogAgentCallable::onParcelSent(): fail on sending parcels.");
             onIoError();
         }
     }
@@ -175,7 +191,10 @@ protected:
             _pending_logwrites = false;
         }
 
+        TRACED("     DillLogAgentCallable::onIoError(): All pending logs dropped.");
+
         boost::thread::sleep(boost::get_system_time() + boost::posix_time::seconds(3));
+        TRACED("     DillLogAgentCallable::onIoError(): Retry connecting.");
         asyncConnect();
     }
 };
