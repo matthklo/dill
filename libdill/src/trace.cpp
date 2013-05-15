@@ -32,7 +32,7 @@
 #include <cstring>
 #include <cstdio>
 
-static char *_g_prilabel[] = {"[V] ", "[D] ", "[I] ", "[W] ", "[E] "};
+static const char *_g_prilabel[] = {"[V] ", "[D] ", "[I] ", "[W] ", "[E] "};
 
 void _trace( unsigned char pri, const char *fmt, ... )
 {
