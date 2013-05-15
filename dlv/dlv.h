@@ -37,6 +37,8 @@
 #define DLVSTR_MAINFRAME_TITLE         wxT("DLV - Dill Log Viewer")
 #define DLVSTR_ABOUT_MSG               wxT("DLV 0.1.0")
 #define DLVSTR_ABOUT_TITLE             wxT("About DLV")
+#define DLVSTR_ERROR_MSG               wxT("Failed to start dill server at %s:%u. (EC:%u)\nTo work with an external dill server, pass its address/port as command arguments.")
+#define DLVSTR_ERROR_TITLE             wxT("Error")
 #define DLVSTR_HELPMENU_LABEL          wxT("&Help")
 #define DLVSTR_HELPMENU_ABOUT_LABEL    wxT("&About...\tF1")
 #define DLVSTR_HELPMENU_ABOUT_COMMENT  wxT("Show about dialog")

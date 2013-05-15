@@ -63,7 +63,15 @@ bool DlvApp::OnInit()
         // Try initiate a dill server using default addr/port,
         // and also start up a subscriber connecting to it.
 
-        dill::serverInit(); // TODO: configurable buffer size and channel num.
+        unsigned int errorCode = dill::serverInit(); // TODO: configurable buffer size and channel num.
+        if (DILL_EC_SUCCEED != errorCode) 
+        {
+            wxString msg;
+            msg.Printf(DLVSTR_ERROR_MSG,
+                wxT(DILL_DEFAULT_ADDR), DILL_DEFAULT_PORT, errorCode);
+            wxMessageBox(msg, DLVSTR_ERROR_TITLE, wxICON_ERROR);
+            return false;
+        }
         dill::subscribeInit();
     }
 
