@@ -69,7 +69,7 @@ bool DlvApp::OnInit()
             wxString msg;
             msg.Printf(DLVSTR_ERROR_MSG,
                 wxT(DILL_DEFAULT_ADDR), DILL_DEFAULT_PORT, errorCode);
-            wxMessageBox(msg, DLVSTR_ERROR_TITLE, wxICON_ERROR);
+            wxMessageBox(msg, DLVSTR_ERROR_TITLE, wxOK | wxICON_ERROR);
             return false;
         }
         dill::subscribeInit();
