@@ -167,6 +167,8 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     }
 
     SetSizer(mMainVBoxSizer);
+
+    mPriorityComboBox->SetSelection(0);
 }
 
 DlvChannelPage::~DlvChannelPage()
