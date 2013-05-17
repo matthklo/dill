@@ -227,7 +227,9 @@ DillServerConnection::DillServerConnection(DillServerNetIoCallable *server, boos
 
 DillServerConnection::~DillServerConnection()
 {
-    _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both);
+    boost::system::error_code ec;
+    _socket->cancel();
+    _socket->shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
     _socket->close();
     delete _socket;
 }
