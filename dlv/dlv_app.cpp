@@ -41,6 +41,7 @@ bool DlvApp::OnInit()
     mTimer = 0;
     mServerAddr = wxT(DILL_DEFAULT_ADDR);
     mServerPort = DILL_DEFAULT_PORT;
+    mQuiting = false;
 
     if (argc > 1)
     {
@@ -92,6 +93,7 @@ bool DlvApp::OnInit()
 
 int DlvApp::OnExit()
 {
+    mQuiting = true;
     mTimer->Stop();
     delete mTimer; mTimer = 0;
 
@@ -103,8 +105,7 @@ int DlvApp::OnExit()
 
 void DlvApp::OnTimeout(wxTimerEvent& e)
 {
-    if (mTimer)
-        updateConnectionStatus();
+    updateConnectionStatus();
 }
 
 DlvFrame* DlvApp::getMainFrame()
@@ -114,6 +115,8 @@ DlvFrame* DlvApp::getMainFrame()
 
 void DlvApp::updateConnectionStatus()
 {
+    if (mQuiting) return;
+
     DlvEvtDataConnStatus* stat = new DlvEvtDataConnStatus;
     stat->ServerAddr = mServerAddr;
     stat->ServerPort = mServerPort;
@@ -129,12 +132,20 @@ void DlvApp::updateConnectionStatus()
     wxPostEvent(mFrame, ev);
 }
 
+bool DlvApp::isQuiting() const
+{
+    return mQuiting;
+}
+
 /* 
  * Callback from the main thread inside dill library,
  * make sure only communicate with UI via event posting.
  */
 void DlvApp::dillCallback(DillEvent *e)
 {
+    if (wxGetApp().isQuiting())
+        return;
+
     wxASSERT_MSG((e != 0), wxT("Null DillEvent pointer."));
 
     switch(e->Type)

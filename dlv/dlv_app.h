@@ -41,6 +41,8 @@ public:
     int  OnExit();
     void OnTimeout(wxTimerEvent& e);
 
+    bool isQuiting() const;
+
     DlvFrame*    getMainFrame();
     const char*  getChannelName(unsigned int id);
     unsigned int getChannelNames(std::vector<std::string> &outCopy);
@@ -65,6 +67,7 @@ private:
     DlvFrame*                    mFrame;
     wxString                     mServerAddr;
     int                          mServerPort;
+    bool                         mQuiting;
 };
 
 DECLARE_APP(DlvApp)
