@@ -173,5 +173,12 @@ void DlvFrame::OnSubscribe(wxCommandEvent &ev)
 
 void DlvFrame::OnOpenLog(wxCommandEvent &ev)
 {
+    wxFileDialog fd(this, wxT("Choose Log File(s)"), wxGetCwd(), wxT(""),
+                    wxT("Dlv Log Files (*.dlf)|*.dlf"), wxFD_OPEN | wxFD_MULTIPLE);
 
+    if (wxID_OK == fd.ShowModal())
+    {
+        wxArrayString filenames;
+        fd.GetFilenames(filenames);
+    }
 }
