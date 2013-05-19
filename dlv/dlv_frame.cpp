@@ -29,6 +29,7 @@
 #include "dlv_app.h"
 #include "dlv_frame.h"
 #include "dlv_channelpage.h"
+#include "dlv_subscribedlg.h"
 
 BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
     EVT_MENU   (wxID_ABOUT, DlvFrame::OnAbout)
@@ -38,6 +39,7 @@ BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
     EVT_COMMAND(DLVEVT_REGDATA, DlvDillEvent, DlvFrame::OnDillRegisterUpdate)
     EVT_MENU   (DLVID_TOOLSUBSCRIBE, DlvFrame::OnSubscribe)
     EVT_MENU   (DLVID_TOOLOPENLOG, DlvFrame::OnOpenLog)
+    EVT_CLOSE  (DlvFrame::OnClose)
 END_EVENT_TABLE()
 
 DlvFrame::DlvFrame()
@@ -83,8 +85,8 @@ void DlvFrame::setupToolBar()
                      wxBitmap(*mOpenLogButton), DLVSTR_TOOL_OPENLOG_COMMENT);
     toolBar->AddTool(DLVID_TOOLSUBSCRIBE, DLVSTR_TOOL_SUBSCRIBE_LABEL,
                      wxBitmap(*mSubscribeButton), DLVSTR_TOOL_SUBSCRIBE_COMMENT);
-
     toolBar->Realize();
+    toolBar->EnableTool(DLVID_TOOLSUBSCRIBE, false);
 }
 
 void DlvFrame::setupMenuBar()
@@ -100,6 +102,8 @@ void DlvFrame::setupMenuBar()
     fileMenu->AppendSeparator();
     fileMenu->Append(wxID_EXIT, DLVSTR_FILEMENU_EXIT_LABEL,
                      DLVSTR_FILEMENU_EXIT_COMMENT);
+
+    fileMenu->Enable(DLVID_TOOLSUBSCRIBE, false);
 
     wxMenu *helpMenu = new wxMenu;
     helpMenu->Append(wxID_ABOUT, DLVSTR_HELPMENU_ABOUT_LABEL,
@@ -129,13 +133,34 @@ void DlvFrame::OnUpdateConnStat(wxCommandEvent &ev)
 
         if (mWaitingFirstChannel && (data->ChannelNum > 0))
         {
-            wxString chname = wxString::FromUTF8(wxGetApp().getChannelName(0));
-            DlvChannelPage *page = new DlvChannelPage(&mChannelNotebook);
-            mChannelNotebook.AddPage(page, chname);
-            wxGetApp().subscribeChannel(0, (void*)page);
+            DoSubscribeChannel(0);
             mWaitingFirstChannel = false;
+
+            GetMenuBar()->Enable(DLVID_TOOLSUBSCRIBE, true);
+            GetToolBar()->EnableTool(DLVID_TOOLSUBSCRIBE, true);
         }
         delete data;
+    }
+}
+
+void DlvFrame::DoSubscribeChannel(int chidx, bool subscribe)
+{
+    wxString chname = wxString::FromUTF8(wxGetApp().getChannelName(chidx));
+    if (subscribe)
+    {
+        DlvChannelPage *page = new DlvChannelPage(&mChannelNotebook);
+        mChannelNotebook.AddPage(page, chname);
+        wxGetApp().subscribeChannel(chidx, (void*)page);
+    } else {
+        wxGetApp().subscribeChannel(chidx, 0, false);
+        for (unsigned int i=0; i<mChannelNotebook.GetPageCount(); ++i)
+        {
+            if (mChannelNotebook.GetPageText(i) == chname)
+            {
+                mChannelNotebook.DeletePage(i);
+                break;
+            }
+        }
     }
 }
 
@@ -168,7 +193,8 @@ void DlvFrame::OnDillRegisterUpdate(wxCommandEvent &ev)
 
 void DlvFrame::OnSubscribe(wxCommandEvent &ev)
 {
-
+    DlvSubscribeDialog sdlg(this);
+    sdlg.ShowModal();
 }
 
 void DlvFrame::OnOpenLog(wxCommandEvent &ev)
@@ -181,4 +207,10 @@ void DlvFrame::OnOpenLog(wxCommandEvent &ev)
         wxArrayString filenames;
         fd.GetFilenames(filenames);
     }
+}
+
+void DlvFrame::OnClose(wxCloseEvent &ev)
+{
+    wxGetApp().setQuiting();
+    Destroy();
 }

@@ -65,6 +65,7 @@
 #define DLVSTR_TOOL_OPENLOG_LABEL      wxT("Open Log")
 #define DLVSTR_TOOL_OPENLOG_LABEL_S    wxT("&Open Log ...\tAlt-O")
 #define DLVSTR_TOOL_OPENLOG_COMMENT    wxT("Open log file which was previously saved")
+#define DLVSTR_SUBSCRIBEDLG_TITLE      wxT("Subscribe Channels")
 
 enum DLVID
 {
@@ -83,6 +84,8 @@ enum DLVID
     DLVID_MAINTOOLBAR,
     DLVID_TOOLSUBSCRIBE,
     DLVID_TOOLOPENLOG,
+    DLVID_SUBSCRIBEDLG,
+    DLVID_CHANNELCHECKLISTBOX,
 };
 
 enum DLVCHTYPE

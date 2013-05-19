@@ -44,6 +44,9 @@ public:
     void OnDillRegisterUpdate(wxCommandEvent &ev);
     void OnSubscribe(wxCommandEvent &ev);
     void OnOpenLog(wxCommandEvent &ev);
+    void OnClose(wxCloseEvent &ev);
+
+    void DoSubscribeChannel(int chidx, bool subscribe = true);
 
 private:
     DECLARE_EVENT_TABLE()

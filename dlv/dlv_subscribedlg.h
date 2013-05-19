@@ -25,52 +25,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
+ 
 #pragma once
-
+ 
 #include "dlv.h"
-#include <vector>
-#include <string>
-
-class  DlvFrame;
-
-class DlvApp : public wxApp
+ 
+class DlvSubscribeDialog : public wxDialog
 {
 public:
-    bool OnInit();
-    int  OnExit();
-    void OnTimeout(wxTimerEvent& e);
+    DlvSubscribeDialog(wxWindow* parent);
+    ~DlvSubscribeDialog();
 
-    bool isQuiting() const;
-    void setQuiting();
-
-    DlvFrame*    getMainFrame();
-    const char*  getChannelName(unsigned int id);
-    unsigned int getChannelNames(std::vector<std::string> &outCopy);
-    void*        getChannelPageByID(unsigned int id);
-    bool         subscribeChannel(unsigned int channelId, void* page, bool subscribe = true);
-    bool         isChannelSubscribed(const std::string &name);
-    bool         isChannelIDSubscribed(unsigned int id);
+    int ShowModal();
 
 private:
-    DECLARE_EVENT_TABLE()
-
-    static void  dillCallback(DillEvent* e);
-           void  updateConnectionStatus();
-           void  refreshChannelData(bool fullRefresh);
-
-    struct ChannelData
-    {
-        void*       Page;
-        std::string Name;
-    };
-
-    std::vector<ChannelData>     mChannelData;
-    wxTimer*                     mTimer;
-    DlvFrame*                    mFrame;
-    wxString                     mServerAddr;
-    int                          mServerPort;
-    bool                         mQuiting;
+    wxCheckListBox* mCheckListBox;
+    wxBoxSizer*     mMainSizer;
+    wxArrayString   mSubscribingChannels;
 };
-
-DECLARE_APP(DlvApp)
+ 

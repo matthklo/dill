@@ -93,8 +93,6 @@ bool DlvApp::OnInit()
 
 int DlvApp::OnExit()
 {
-    mQuiting = true;
-    mTimer->Stop();
     delete mTimer; mTimer = 0;
 
     dill::subscribeDeinit();
@@ -135,6 +133,12 @@ void DlvApp::updateConnectionStatus()
 bool DlvApp::isQuiting() const
 {
     return mQuiting;
+}
+
+void DlvApp::setQuiting()
+{
+    mTimer->Stop();
+    mQuiting = true;
 }
 
 /* 
@@ -258,4 +262,23 @@ void DlvApp::refreshChannelData(bool fullRefresh)
             }
         }
     }
+}
+
+bool DlvApp::isChannelSubscribed(const std::string &name)
+{
+    for (unsigned int i = 0; i<mChannelData.size(); ++i)
+    {
+        if (mChannelData[i].Name == name)
+        {
+            return (mChannelData[i].Page != 0);
+        }
+    }
+    return false;
+}
+
+bool DlvApp::isChannelIDSubscribed(unsigned int id)
+{
+    if (id >= mChannelData.size())
+        return false;
+    return (mChannelData[id].Page != 0);
 }
