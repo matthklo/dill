@@ -35,19 +35,25 @@ class DlvFrame : public wxFrame
 {
 public:
     DlvFrame();
+    ~DlvFrame();
 
     void OnQuit(wxCommandEvent &ev);
     void OnAbout(wxCommandEvent &ev);
     void OnUpdateConnStat(wxCommandEvent &ev);
     void OnDillLogData(wxCommandEvent &ev);
     void OnDillRegisterUpdate(wxCommandEvent &ev);
+    void OnSubscribe(wxCommandEvent &ev);
+    void OnOpenLog(wxCommandEvent &ev);
 
 private:
     DECLARE_EVENT_TABLE()
 
+    void setupToolBar();
     void setupMenuBar();
     void setupStatusBar();
 
+    wxImage*      mSubscribeButton;
+    wxImage*      mOpenLogButton;
     wxNotebook    mChannelNotebook;
     bool          mWaitingFirstChannel;
 };

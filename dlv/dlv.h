@@ -59,8 +59,14 @@
 #define DLVSTR_LOGHDR_MESSAGE          wxT("Message")
 #define DLVSTR_REGHDR_NAME             wxT("Name")
 #define DLVSTR_REGHDR_CONTENT          wxT("Content")
+#define DLVSTR_TOOL_SUBSCRIBE_LABEL    wxT("Subscribe Channels")
+#define DLVSTR_TOOL_SUBSCRIBE_LABEL_S  wxT("&Subscribe Channels ...\tAlt-S")
+#define DLVSTR_TOOL_SUBSCRIBE_COMMENT  wxT("Add or remove monitoring channels")
+#define DLVSTR_TOOL_OPENLOG_LABEL      wxT("Open Log")
+#define DLVSTR_TOOL_OPENLOG_LABEL_S    wxT("&Open Log ...\tAlt-O")
+#define DLVSTR_TOOL_OPENLOG_COMMENT    wxT("Open log file which was previously saved")
 
-enum
+enum DLVID
 {
     DLVID_MAINFRAME = 5299,
     DLVID_CHANNELNOTEBOOK,
@@ -74,4 +80,13 @@ enum
     DLVID_FILTERDELBTN,
     DLVID_FILTEREDITBTN,
     DLVID_LOGCLEARBTN,
+    DLVID_MAINTOOLBAR,
+    DLVID_TOOLSUBSCRIBE,
+    DLVID_TOOLOPENLOG,
+};
+
+enum DLVCHTYPE
+{
+    CHTYPE_LIVE = 0,
+    CHTYPE_FILE,
 };

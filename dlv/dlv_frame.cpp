@@ -31,11 +31,13 @@
 #include "dlv_channelpage.h"
 
 BEGIN_EVENT_TABLE(DlvFrame, wxFrame)
-    EVT_MENU(wxID_ABOUT, DlvFrame::OnAbout)
-    EVT_MENU(wxID_EXIT,  DlvFrame::OnQuit)
+    EVT_MENU   (wxID_ABOUT, DlvFrame::OnAbout)
+    EVT_MENU   (wxID_EXIT,  DlvFrame::OnQuit)
     EVT_COMMAND(DLVEVT_CONNSTAT, DlvDillEvent, DlvFrame::OnUpdateConnStat)
     EVT_COMMAND(DLVEVT_LOGDATA, DlvDillEvent, DlvFrame::OnDillLogData)
     EVT_COMMAND(DLVEVT_REGDATA, DlvDillEvent, DlvFrame::OnDillRegisterUpdate)
+    EVT_MENU   (DLVID_TOOLSUBSCRIBE, DlvFrame::OnSubscribe)
+    EVT_MENU   (DLVID_TOOLOPENLOG, DlvFrame::OnOpenLog)
 END_EVENT_TABLE()
 
 DlvFrame::DlvFrame()
@@ -46,8 +48,17 @@ DlvFrame::DlvFrame()
     // Set the frame icon
     //SetIcon(wxIcon(mondrian_xpm));
 
+    wxImage::AddHandler(new wxPNGHandler);
+
     setupMenuBar();
+    setupToolBar();
     setupStatusBar();
+}
+
+DlvFrame::~DlvFrame()
+{
+    delete mSubscribeButton; mSubscribeButton = 0;
+    delete mOpenLogButton; mOpenLogButton = 0;
 }
 
 void DlvFrame::OnAbout(wxCommandEvent& event)
@@ -61,11 +72,32 @@ void DlvFrame::OnQuit(wxCommandEvent& event)
     Close();
 }
 
+void DlvFrame::setupToolBar()
+{
+    wxToolBar *toolBar = CreateToolBar(wxNO_BORDER | wxTB_HORIZONTAL, DLVID_MAINTOOLBAR);
+
+    mSubscribeButton = new wxImage(wxT("resource/subscribe-icon.png"), wxBITMAP_TYPE_PNG);
+    mOpenLogButton   = new wxImage(wxT("resource/openlog-icon.png"),    wxBITMAP_TYPE_PNG);
+
+    toolBar->AddTool(DLVID_TOOLOPENLOG, DLVSTR_TOOL_OPENLOG_LABEL, 
+                     wxBitmap(*mOpenLogButton), DLVSTR_TOOL_OPENLOG_COMMENT);
+    toolBar->AddTool(DLVID_TOOLSUBSCRIBE, DLVSTR_TOOL_SUBSCRIBE_LABEL,
+                     wxBitmap(*mSubscribeButton), DLVSTR_TOOL_SUBSCRIBE_COMMENT);
+
+    toolBar->Realize();
+}
+
 void DlvFrame::setupMenuBar()
 {
-    wxMenuBar *menuBar = new wxMenuBar();
+    wxMenuBar *menuBar = new wxMenuBar;
 
     wxMenu *fileMenu = new wxMenu;
+    fileMenu->Append(DLVID_TOOLOPENLOG, DLVSTR_TOOL_OPENLOG_LABEL_S,
+                     DLVSTR_TOOL_OPENLOG_COMMENT);
+    fileMenu->AppendSeparator();
+    fileMenu->Append(DLVID_TOOLSUBSCRIBE, DLVSTR_TOOL_SUBSCRIBE_LABEL_S,
+                     DLVSTR_TOOL_SUBSCRIBE_COMMENT);
+    fileMenu->AppendSeparator();
     fileMenu->Append(wxID_EXIT, DLVSTR_FILEMENU_EXIT_LABEL,
                      DLVSTR_FILEMENU_EXIT_COMMENT);
 
@@ -132,4 +164,14 @@ void DlvFrame::OnDillRegisterUpdate(wxCommandEvent &ev)
         }
         delete data;
     }
+}
+
+void DlvFrame::OnSubscribe(wxCommandEvent &ev)
+{
+
+}
+
+void DlvFrame::OnOpenLog(wxCommandEvent &ev)
+{
+
 }

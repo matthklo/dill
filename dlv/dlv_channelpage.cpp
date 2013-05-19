@@ -73,8 +73,9 @@ BEGIN_EVENT_TABLE(DlvChannelPage, wxPanel)
     EVT_COMBOBOX(DLVID_PRIORITYCOMBO, DlvChannelPage::OnPriorityFilterChanged)
 END_EVENT_TABLE()
 
-DlvChannelPage::DlvChannelPage(wxWindow *parent)
+DlvChannelPage::DlvChannelPage(wxWindow *parent, DLVCHTYPE type)
     : wxPanel(parent)
+    , mChannelType(type)
     , mMainVBoxSizer(new wxBoxSizer(wxVERTICAL))
     , mButtonHBoxSizer(new wxBoxSizer(wxHORIZONTAL))
     , mPriorityFilterHBoxSizer(new wxBoxSizer(wxHORIZONTAL))
@@ -83,7 +84,6 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent)
     , mFilterHBoxSizer(new wxBoxSizer(wxHORIZONTAL))
 {
     // Load icons
-    wxImage::AddHandler(new wxPNGHandler);
     mFilterAddImage    = new wxImage(wxT("resource/add-icon.png"),     wxBITMAP_TYPE_PNG);
     mFilterEditImage   = new wxImage(wxT("resource/edit-icon.png"),    wxBITMAP_TYPE_PNG);
     mFilterDeleteImage = new wxImage(wxT("resource/remove-icon.png"),  wxBITMAP_TYPE_PNG);
@@ -222,6 +222,11 @@ void DlvChannelPage::OnShowRegViewButtonClicked(wxCommandEvent& ev)
 void DlvChannelPage::OnLogClear(wxCommandEvent& ev)
 {
     resetContent();
+}
+
+DLVCHTYPE DlvChannelPage::getType() const
+{
+    return mChannelType;
 }
 
 void DlvChannelPage::resetContent()

@@ -37,7 +37,7 @@
 class DlvChannelPage : public wxPanel
 {
 public:
-    DlvChannelPage(wxWindow *parent);
+    DlvChannelPage(wxWindow *parent, DLVCHTYPE type = CHTYPE_LIVE);
     ~DlvChannelPage();
 
     void OnAppenLog(DlvEvtDataLog *logdata);
@@ -47,6 +47,8 @@ public:
     void OnLogClear(wxCommandEvent& ev);
     void OnPriorityFilterChanged(wxCommandEvent& ev);
 
+    DLVCHTYPE getType() const;
+
 private:
     DECLARE_EVENT_TABLE()
 
@@ -55,6 +57,8 @@ private:
     void resetLogContent(bool deleteRaw = true);
     void resetRegisterContent();
     unsigned char getCurrentPriorityFilterLevel();
+
+    DLVCHTYPE          mChannelType;
 
     wxBoxSizer*        mMainVBoxSizer;
     wxBoxSizer*        mButtonHBoxSizer;
