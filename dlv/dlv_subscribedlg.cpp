@@ -81,8 +81,8 @@ int DlvSubscribeDialog::ShowModal()
     if (ret == wxID_OK)
     {
         // Scan check status for all entries in check list box
-        // and compare to the subscribing status.
-        // Add/delete channel page(s) aaccording to the compare result.
+        // and compare to the current subscribing status.
+        // Add/delete channel page(s) according to the comparing result.
         for (unsigned int i=0; i<mCheckListBox->GetCount(); ++i)
         {
             bool wasInSubscribing = (wxNOT_FOUND != mSubscribingChannels.Index(mCheckListBox->GetString(i)));
