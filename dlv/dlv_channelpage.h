@@ -46,6 +46,7 @@ public:
     void OnShowRegViewButtonClicked(wxCommandEvent& ev);
     void OnLogClear(wxCommandEvent& ev);
     void OnPriorityFilterChanged(wxCommandEvent& ev);
+    void OnRecordButtonClicked(wxCommandEvent& ev);
 
     DLVCHTYPE getType() const;
 
@@ -59,6 +60,7 @@ private:
     unsigned char getCurrentPriorityFilterLevel();
 
     DLVCHTYPE          mChannelType;
+    bool               mRecording;
 
     wxBoxSizer*        mMainVBoxSizer;
     wxBoxSizer*        mButtonHBoxSizer;
@@ -74,6 +76,7 @@ private:
     wxBitmapButton*    mFilterEditButton;
     wxBitmapButton*    mFilterDeleteButton;
     wxBitmapButton*    mClearLogButton;
+    wxBitmapButton*    mRecordButton;
     wxComboBox*        mPriorityComboBox;
     wxTextCtrl*        mFilterTextCtrl;
 
@@ -83,6 +86,8 @@ private:
     wxImage*           mClearLogImage;
     wxImage*           mShowRegViewImage;
     wxImage*           mHideRegViewImage;
+    wxImage*           mStartRecordingImage;
+    wxImage*           mStopRecordingImage;
 
     typedef std::vector<DlvEvtDataLog*> LogDataVector;
     std::vector<DlvEvtDataLog*> mLogData;

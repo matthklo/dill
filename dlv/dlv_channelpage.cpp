@@ -70,6 +70,7 @@ struct _REGHDR
 BEGIN_EVENT_TABLE(DlvChannelPage, wxPanel)
     EVT_BUTTON(DLVID_SHOWREGBTN,  DlvChannelPage::OnShowRegViewButtonClicked)
     EVT_BUTTON(DLVID_LOGCLEARBTN, DlvChannelPage::OnLogClear)
+    EVT_BUTTON(DLVID_RECORDINGBTN,DlvChannelPage::OnRecordButtonClicked)
     EVT_COMBOBOX(DLVID_PRIORITYCOMBO, DlvChannelPage::OnPriorityFilterChanged)
 END_EVENT_TABLE()
 
@@ -82,14 +83,17 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent, DLVCHTYPE type)
     , mContentHBoxSizer(new wxBoxSizer(wxHORIZONTAL))
     , mLogVBoxSizer(new wxBoxSizer(wxVERTICAL))
     , mFilterHBoxSizer(new wxBoxSizer(wxHORIZONTAL))
+    , mRecording(false)
 {
     // Load icons
-    mFilterAddImage    = new wxImage(wxT("resource/add-icon.png"),     wxBITMAP_TYPE_PNG);
-    mFilterEditImage   = new wxImage(wxT("resource/edit-icon.png"),    wxBITMAP_TYPE_PNG);
-    mFilterDeleteImage = new wxImage(wxT("resource/remove-icon.png"),  wxBITMAP_TYPE_PNG);
-    mClearLogImage     = new wxImage(wxT("resource/clear-icon.png"),   wxBITMAP_TYPE_PNG);
-    mShowRegViewImage  = new wxImage(wxT("resource/logreg-icon.png"),  wxBITMAP_TYPE_PNG);
-    mHideRegViewImage  = new wxImage(wxT("resource/logonly-icon.png"), wxBITMAP_TYPE_PNG);
+    mFilterAddImage      = new wxImage(wxT("resource/add-icon.png"),     wxBITMAP_TYPE_PNG);
+    mFilterEditImage     = new wxImage(wxT("resource/edit-icon.png"),    wxBITMAP_TYPE_PNG);
+    mFilterDeleteImage   = new wxImage(wxT("resource/remove-icon.png"),  wxBITMAP_TYPE_PNG);
+    mClearLogImage       = new wxImage(wxT("resource/clear-icon.png"),   wxBITMAP_TYPE_PNG);
+    mShowRegViewImage    = new wxImage(wxT("resource/logreg-icon.png"),  wxBITMAP_TYPE_PNG);
+    mHideRegViewImage    = new wxImage(wxT("resource/logonly-icon.png"), wxBITMAP_TYPE_PNG);
+    mStartRecordingImage = new wxImage(wxT("resource/rec-icon.png"),     wxBITMAP_TYPE_PNG);
+    mStopRecordingImage  = new wxImage(wxT("resource/stoprec-icon.png"), wxBITMAP_TYPE_PNG);
 
     // Initiate all components
     mLogListCtrl          = new wxListCtrl(this, DLVID_LOGLISTCTRL, wxDefaultPosition, 
@@ -105,6 +109,8 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent, DLVCHTYPE type)
     mFilterDeleteButton   = new wxBitmapButton(this, DLVID_FILTERDELBTN, wxBitmap(*mFilterDeleteImage),
                                                wxDefaultPosition, wxSize(28, 28));
     mClearLogButton       = new wxBitmapButton(this, DLVID_LOGCLEARBTN, wxBitmap(*mClearLogImage),
+                                               wxDefaultPosition, wxSize(28, 28));
+    mRecordButton         = new wxBitmapButton(this, DLVID_RECORDINGBTN, wxBitmap(*mStartRecordingImage),
                                                wxDefaultPosition, wxSize(28, 28));
 
     wxString priorities[] = { DLVSTR_PRIORITY_VERBOSE, 
@@ -131,6 +137,7 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent, DLVCHTYPE type)
     mButtonHBoxSizer->Add(mFilterDeleteButton);
     mButtonHBoxSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(1, 28), wxLI_VERTICAL),
                           0, wxLEFT | wxRIGHT, 5);
+    mButtonHBoxSizer->Add(mRecordButton);
     mButtonHBoxSizer->Add(mClearLogButton);
     mButtonHBoxSizer->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(1, 28), wxLI_VERTICAL),
                           0, wxLEFT | wxRIGHT, 5);
@@ -169,18 +176,25 @@ DlvChannelPage::DlvChannelPage(wxWindow *parent, DLVCHTYPE type)
     SetSizer(mMainVBoxSizer);
 
     mPriorityComboBox->SetSelection(0);
+
+    if (mChannelType != CHTYPE_LIVE)
+    {
+        mRecordButton->Show(false);
+    }
 }
 
 DlvChannelPage::~DlvChannelPage()
 {
     resetContent();
 
-    delete mFilterAddImage;    mFilterAddImage = 0;
-    delete mFilterEditImage;   mFilterEditImage = 0;
-    delete mFilterDeleteImage; mFilterDeleteImage = 0;
-    delete mClearLogImage;     mClearLogImage = 0;
-    delete mShowRegViewImage;  mShowRegViewImage = 0;
-    delete mHideRegViewImage;  mHideRegViewImage = 0;
+    delete mFilterAddImage;      mFilterAddImage = 0;
+    delete mFilterEditImage;     mFilterEditImage = 0;
+    delete mFilterDeleteImage;   mFilterDeleteImage = 0;
+    delete mClearLogImage;       mClearLogImage = 0;
+    delete mShowRegViewImage;    mShowRegViewImage = 0;
+    delete mHideRegViewImage;    mHideRegViewImage = 0;
+    delete mStartRecordingImage; mStartRecordingImage = 0;
+    delete mStopRecordingImage;  mStopRecordingImage = 0;
 }
 
 void DlvChannelPage::OnAppenLog(DlvEvtDataLog *logdata)
@@ -323,4 +337,31 @@ void DlvChannelPage::renderLog(DlvEvtDataLog *logdata)
 
     // TODO: scroll to the bottom *conditionally*
     mLogListCtrl->EnsureVisible(pos);
+}
+
+void DlvChannelPage::OnRecordButtonClicked(wxCommandEvent& ev)
+{
+    if (mRecording)
+    {
+        // stop recording
+        mRecording = false;
+        mRecordButton->SetBitmapLabel(wxBitmap(*mStartRecordingImage));
+    } else {
+        // start recording
+        mRecording = true;
+
+        wxDateTime curDate = wxDateTime::Now();
+        wxString defaultOutputFileName;
+        defaultOutputFileName.Printf("");
+        wxFileDialog fd(this, wxT("Choose Output Filename"), wxGetCwd(), wxT(""),
+                    wxT("Dlv Log Files (*.dlf)|*.dlf"), wxFD_SAVE);
+
+        if (wxID_OK == fd.ShowModal())
+        {
+            wxArrayString filenames;
+            fd.GetFilenames(filenames);
+        }
+
+        mRecordButton->SetBitmapLabel(wxBitmap(*mStopRecordingImage));
+    }
 }
